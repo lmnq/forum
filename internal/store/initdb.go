@@ -8,7 +8,7 @@ import (
 )
 
 // InitDB ..
-func InitDB() (*sql.DB, error) {
+func InitDB() (*ForumDB, error) {
 	db, err := sql.Open("sqlite3", "./forum.db?_foreign_keys=on")
 	if err != nil {
 		return nil, err
@@ -25,7 +25,11 @@ func InitDB() (*sql.DB, error) {
 	if err = deleteUser(db); err != nil {
 		return nil, err
 	}
-	return db, nil
+
+	forumDB := &ForumDB{
+		DB: db,
+	}
+	return forumDB, nil
 }
 
 func initTables(db *sql.DB) error {
@@ -51,6 +55,44 @@ func initTables(db *sql.DB) error {
 			FOREIGN KEY("authorID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
 		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE "comments" (
+			"ID"	INTEGER NOT NULL UNIQUE,
+			"content"	TEXT NOT NULL,
+			"user_ID"	INTEGER NOT NULL,
+			"post_ID"	INTEGER NOT NULL,
+			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE,
+			FOREIGN KEY("post_ID") REFERENCES "posts"("ID") ON DELETE CASCADE,
+			PRIMARY KEY("ID" AUTOINCREMENT)
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE "categories" (
+			"ID"	INTEGER NOT NULL UNIQUE,
+			"name"	TEXT NOT NULL UNIQUE,
+			PRIMARY KEY("ID" AUTOINCREMENT)
+		)
+	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE "posts_categories" (
+			"post_ID"	INTEGER NOT NULL,
+			"category_ID"	INTEGER NOT NULL,
+			PRIMARY KEY("post_ID","category_ID"),
+			UNIQUE("post_ID", "category_ID")
+		)
 	`)
 	if err != nil {
 		return err

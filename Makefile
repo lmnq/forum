@@ -1,0 +1,2 @@
+deletedb:
+	rm forum.db
