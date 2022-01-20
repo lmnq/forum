@@ -22,9 +22,9 @@ func InitDB() (*ForumDB, error) {
 	if err = insertData(db); err != nil {
 		return nil, err
 	}
-	if err = deleteUser(db); err != nil {
-		return nil, err
-	}
+	// if err = deleteUser(db); err != nil {
+	// 	return nil, err
+	// }
 
 	forumDB := &ForumDB{
 		DB: db,
@@ -61,7 +61,7 @@ func initTables(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		CREATE TABLE "comments" (
+		CREATE TABLE IF NOT EXISTS "comments" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"content"	TEXT NOT NULL,
 			"user_ID"	INTEGER NOT NULL,
@@ -76,7 +76,7 @@ func initTables(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		CREATE TABLE "categories" (
+		CREATE TABLE IF NOT EXISTS "categories" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"name"	TEXT NOT NULL UNIQUE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
@@ -87,7 +87,7 @@ func initTables(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		CREATE TABLE "posts_categories" (
+		CREATE TABLE IF NOT EXISTS "posts_categories" (
 			"post_ID"	INTEGER NOT NULL,
 			"category_ID"	INTEGER NOT NULL,
 			PRIMARY KEY("post_ID","category_ID"),

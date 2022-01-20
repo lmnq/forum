@@ -1,9 +1,9 @@
 package app
 
-// Post ..
-type Post struct {
+// Comment ..
+type Comment struct {
 	ID      int
+	PostID  int
 	Author  string
-	Title   string
 	Content string
 }

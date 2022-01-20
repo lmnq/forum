@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        {{ range $key, $value := . }}
+        <div>
+            <pre>{{ $key.ID }}</pre>
+            <pre>{{ $key.Author }}</pre>
+            <pre>{{ $key.Title }}</pre>
+            <pre>{{ $key.Content }}</pre>
+            <!-- {{ range .comments }}
+            <div>
+                <pre>{{ .ID }}</pre>
+                <pre>{{ .PostID }}</pre>
+                <pre>{{ .Author }}</pre>
+                <pre>{{ .Content }}</pre>
+            </div>
+            {{ end }} -->
+        </div>
+        <br>
+        {{ end }}
+    </div>
+</body>
+</html>
