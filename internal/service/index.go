@@ -16,37 +16,43 @@ type Forum struct {
 
 // IndexHandler ..
 func (f *Forum) IndexHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("templates/index.html")
+	tmpl, err := template.ParseFiles("templates/comments.html")
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	type data struct {
-		post     *app.Post
-		comments []*app.Comment
+		Post     *app.Post
+		Comments []*app.Comment
 	}
-	res := make(map[*app.Post][]*app.Comment)
+	ans := []data{}
+	// res := make(map[*app.Post][]*app.Comment)
 	posts, err := f.DB.GetAllPosts()
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	fmt.Println(posts)
+	// fmt.Println(posts)
 	for _, p := range posts {
 		pComments, err := f.DB.GetCommentsToPost(p)
-		fmt.Println("comms: ", pComments)
-		fmt.Println(p.Title)
+		// fmt.Println("comms: ", pComments[0].Content)
+		// fmt.Println(p.Title)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 		// dodelat'
-		res[p] = pComments
-		// res = append(res, data{
-		// 	post:     p,
-		// 	comments: pComments,
-		// })
+		// res[p] = pComments
+		ans = append(ans, data{
+			Post:     p,
+			Comments: pComments,
+		})
 	}
-	fmt.Println(res)
-	tmpl.Execute(w, res)
+	fmt.Println(ans)
+	for _, d := range ans {
+		fmt.Println(d.Post.Title)
+		fmt.Println(d.Comments[0].Content)
+	}
+	// tmpl.Execute(w, res)
+	tmpl.Execute(w, ans)
 }

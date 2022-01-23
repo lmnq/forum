@@ -124,6 +124,17 @@ func insertData(db *sql.DB) error {
 		return err
 	}
 
+	_, err = db.Exec(`
+		INSERT INTO comments (content, user_ID, post_ID)
+		VALUES
+				("commentary 1", 1, 1),
+				("commentary 2", 2, 2),
+				("commentary 3", 3, 3);
+	`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

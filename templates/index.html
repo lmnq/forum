@@ -14,14 +14,14 @@
             <pre>{{ $key.Author }}</pre>
             <pre>{{ $key.Title }}</pre>
             <pre>{{ $key.Content }}</pre>
-            <!-- {{ range .comments }}
+            {{ range $value }}
             <div>
                 <pre>{{ .ID }}</pre>
                 <pre>{{ .PostID }}</pre>
                 <pre>{{ .Author }}</pre>
                 <pre>{{ .Content }}</pre>
             </div>
-            {{ end }} -->
+            {{ end }}
         </div>
         <br>
         {{ end }}
