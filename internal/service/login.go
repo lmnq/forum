@@ -1,17 +1,14 @@
 package service
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-
-	uuid "github.com/satori/go.uuid"
 )
 
-// SignInHandler ..
-func (f *Forum) SignInHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("templates/sign-in.html")
+// LoginHandler ..
+func (f *Forum) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
 		log.Println(err)
 		return

@@ -10,12 +10,6 @@ type ForumDB struct {
 	DB *sql.DB
 }
 
-// DataBase ..
-type DataBase interface {
-	// fill with db methods (crud)
-	GetAllPosts() ([]*app.Post, error)
-}
-
 // GetAllPosts ..
 func (db *ForumDB) GetAllPosts() ([]*app.Post, error) {
 	posts := []*app.Post{}

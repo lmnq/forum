@@ -18,7 +18,8 @@ func main() {
 	}
 
 	http.HandleFunc("/", forum.IndexHandler)
-	http.HandleFunc("/signin", forum.SignInHandler)
+	http.HandleFunc("/login", forum.LoginHandler)
+	http.HandleFunc("/register", forum.RegisterHandler)
 	fileServer := http.FileServer(http.Dir("./static/css/"))
 	http.Handle("/static/", http.StripPrefix("/static/css", fileServer))
 	log.Fatal(http.ListenAndServe(":8080", nil))
