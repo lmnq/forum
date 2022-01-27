@@ -12,8 +12,14 @@ type ForumDB struct {
 	DB *sql.DB
 }
 
+// NewDataBase ..
+func NewDataBase() (*ForumDB, error) {
+	db, err := initDB()
+	return &ForumDB{DB: db}, err
+}
+
 // InitDB ..
-func InitDB() (*ForumDB, error) {
+func initDB() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "./forum.db?_foreign_keys=on")
 	if err != nil {
 		return nil, err
@@ -31,10 +37,7 @@ func InitDB() (*ForumDB, error) {
 	// 	return nil, err
 	// }
 
-	forumDB := &ForumDB{
-		DB: db,
-	}
-	return forumDB, nil
+	return db, nil
 }
 
 func initTables(db *sql.DB) error {

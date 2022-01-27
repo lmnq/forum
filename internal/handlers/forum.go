@@ -8,13 +8,8 @@ type Forum struct {
 }
 
 // NewForum ..
-func NewForum() (*Forum, error) {
-	srv, err := service.NewService()
-	if err != nil {
-		return nil, err
-	}
-	frm := &Forum{
+func NewForum(srv *service.Service) *Forum {
+	return &Forum{
 		Service: srv,
 	}
-	return frm, nil
 }

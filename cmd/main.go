@@ -2,16 +2,19 @@ package main
 
 import (
 	"forum/internal/handlers"
+	"forum/internal/service"
+	"forum/internal/store"
 	"log"
 	"net/http"
 )
 
 func main() {
-	forum, err := handlers.NewForum()
+	forumdb, err := store.NewDataBase()
 	if err != nil {
-		log.Println(err)
-		return
+		log.Fatal(err)
 	}
+	srv := service.NewService(forumdb)
+	forum := handlers.NewForum(srv)
 	defer forum.Service.Store.DB.Close()
 
 	http.HandleFunc("/", forum.IndexHandler)

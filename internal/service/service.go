@@ -8,13 +8,8 @@ type Service struct {
 }
 
 // NewService ..
-func NewService() (*Service, error) {
-	db, err := store.InitDB()
-	if err != nil {
-		return nil, err
-	}
-	srv := &Service{
+func NewService(db *store.ForumDB) *Service {
+	return &Service{
 		Store: db,
 	}
-	return srv, nil
 }
