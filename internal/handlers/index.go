@@ -1,18 +1,12 @@
-package service
+package handlers
 
 import (
 	"fmt"
 	"forum/internal/app"
-	"forum/internal/store"
 	"html/template"
 	"log"
 	"net/http"
 )
-
-// Forum ..
-type Forum struct {
-	DB *store.ForumDB
-}
 
 // IndexHandler ..
 func (f *Forum) IndexHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,14 +21,14 @@ func (f *Forum) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	ans := []data{}
 	// res := make(map[*app.Post][]*app.Comment)
-	posts, err := f.DB.GetAllPosts()
+	posts, err := f.Service.Store.GetAllPosts()
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	// fmt.Println(posts)
 	for _, p := range posts {
-		pComments, err := f.DB.GetCommentsToPost(p)
+		pComments, err := f.Service.Store.GetCommentsToPost(p)
 		// fmt.Println("comms: ", pComments[0].Content)
 		// fmt.Println(p.Title)
 		if err != nil {

@@ -1,4 +1,4 @@
-package service
+package handlers
 
 import (
 	"forum/internal/app"
@@ -20,10 +20,14 @@ func (f *Forum) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		user, err := validateUserForm(r)
 		if err != nil {
+			log.Println(err)
 			// Error
 			return
 		}
-		f.DB.RegisterUser(user)
+		err = f.Service.Store.RegisterUser(user)
+		log.Println(err)
+		http.Redirect(w, r, "/", 301)
+		return
 		// return
 	}
 	tmpl, err := template.ParseFiles("templates/register.html")
@@ -36,9 +40,9 @@ func (f *Forum) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func validateUserForm(r *http.Request) (*app.User, error) {
 	user := &app.User{
-		Username: r.FormValue("Username"),
-		Email:    r.FormValue("Email"),
-		Password: r.FormValue("Password"),
+		Username: r.FormValue("username"),
+		Email:    r.FormValue("email"),
+		Password: r.FormValue("password"),
 	}
 	return user, nil
 }

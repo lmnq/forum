@@ -11,13 +11,5 @@ func (db *ForumDB) RegisterUser(user *app.User) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.DB.Exec(`
-		INSERT INTO posts (title, content, authorID)
-		VALUES
-				("title4", "content4", 4);
-	`)
-	if err != nil {
-		return err
-	}
 	return nil
 }

@@ -1,14 +1,8 @@
 package store
 
 import (
-	"database/sql"
 	"forum/internal/app"
 )
-
-// ForumDB ..
-type ForumDB struct {
-	DB *sql.DB
-}
 
 // GetAllPosts ..
 func (db *ForumDB) GetAllPosts() ([]*app.Post, error) {

@@ -7,6 +7,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// ForumDB ..
+type ForumDB struct {
+	DB *sql.DB
+}
+
 // InitDB ..
 func InitDB() (*ForumDB, error) {
 	db, err := sql.Open("sqlite3", "./forum.db?_foreign_keys=on")

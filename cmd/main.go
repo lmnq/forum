@@ -1,21 +1,18 @@
 package main
 
 import (
-	"forum/internal/service"
-	"forum/internal/store"
+	"forum/internal/handlers"
 	"log"
 	"net/http"
 )
 
 func main() {
-	db, err := store.InitDB()
+	forum, err := handlers.NewForum()
 	if err != nil {
 		log.Println(err)
+		return
 	}
-	defer db.DB.Close()
-	forum := service.Forum{
-		DB: db,
-	}
+	defer forum.Service.Store.DB.Close()
 
 	http.HandleFunc("/", forum.IndexHandler)
 	http.HandleFunc("/login", forum.LoginHandler)
