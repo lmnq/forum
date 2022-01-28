@@ -20,6 +20,7 @@ func main() {
 	http.HandleFunc("/", forum.IndexHandler)
 	http.HandleFunc("/login", forum.LoginHandler)
 	http.HandleFunc("/register", forum.RegisterHandler)
+	http.HandleFunc("/post/", forum.PostHandler)
 	fileServer := http.FileServer(http.Dir("./static/css/"))
 	http.Handle("/static/", http.StripPrefix("/static/css", fileServer))
 	log.Fatal(http.ListenAndServe(":8080", nil))

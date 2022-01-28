@@ -4,25 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>post</title>
 </head>
 <body>
     <div>
-        {{ range . }}
         <div>
             <pre>{{ .Post.ID }}</pre>
             <pre>{{ .Post.Author }}</pre>
             <pre>{{ .Post.Title }}</pre>
             <pre>{{ .Post.Content }}</pre>
-            {{ range .Comments }}
-            <div>
-                <pre>{{ .ID }}</pre>
-                <pre>{{ .PostID }}</pre>
-                <pre>{{ .Author }}</pre>
-                <pre>{{ .Content }}</pre>
-            </div>
-            {{ end }}
-            <br>
+        </div>
+        <br>
+
+        {{ range .Comments}}
+        <div>
+            <pre>{{ .ID }}</pre>
+            <pre>{{ .PostID }}</pre>
+            <pre>{{ .Author }}</pre>
+            <pre>{{ .Content }}</pre>
         </div>
         <br>
         {{ end }}

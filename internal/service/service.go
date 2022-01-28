@@ -1,6 +1,8 @@
 package service
 
-import "forum/internal/store"
+import (
+	"forum/internal/store"
+)
 
 // Service ..
 type Service struct {

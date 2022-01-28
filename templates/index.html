@@ -8,20 +8,12 @@
 </head>
 <body>
     <div>
-        {{ range $key, $value := . }}
+        {{ range . }}
         <div>
-            <pre>{{ $key.ID }}</pre>
-            <pre>{{ $key.Author }}</pre>
-            <pre>{{ $key.Title }}</pre>
-            <pre>{{ $key.Content }}</pre>
-            {{ range $value }}
-            <div>
-                <pre>{{ .ID }}</pre>
-                <pre>{{ .PostID }}</pre>
-                <pre>{{ .Author }}</pre>
-                <pre>{{ .Content }}</pre>
-            </div>
-            {{ end }}
+            <a href="/post/{{ .ID }}"><pre>{{ .ID }}</pre></a>
+            <pre>{{ .Author }}</pre>
+            <pre>{{ .Title }}</pre>
+            <pre>{{ .Content }}</pre>
         </div>
         <br>
         {{ end }}
