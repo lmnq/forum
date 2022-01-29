@@ -8,8 +8,5 @@ func (db *ForumDB) RegisterUser(user *app.User) error {
 		INSERT INTO users (username, email, password)
 		VALUES (?, ?, ?);`,
 		user.Username, user.Email, user.Password)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

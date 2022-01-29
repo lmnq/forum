@@ -13,36 +13,35 @@ func (f *Forum) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		// Error
 		return
 	}
-	if r.Method == http.MethodPost {
-		// Error
-		if err := r.ParseForm(); err != nil {
-			return
-		}
-		user, err := validateUserForm(r)
+	if r.Method == http.MethodGet {
+		tmpl, err := template.ParseFiles("templates/register.html")
 		if err != nil {
 			log.Println(err)
-			// Error
 			return
 		}
-		err = f.Service.Store.RegisterUser(user)
-		log.Println(err)
-		http.Redirect(w, r, "/", 301)
-		return
-		// return
-	}
-	tmpl, err := template.ParseFiles("templates/register.html")
-	if err != nil {
-		log.Println(err)
+		tmpl.Execute(w, nil)
 		return
 	}
-	tmpl.Execute(w, nil)
-}
-
-func validateUserForm(r *http.Request) (*app.User, error) {
+	if r.Method != http.MethodPost {
+		// Error
+		w.WriteHeader(405)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		return
+	}
 	user := &app.User{
 		Username: r.FormValue("username"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}
-	return user, nil
+	err := f.Service.Store.RegisterUser(user)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "invalid data", http.StatusBadRequest)
+		return
+	}
+	http.Redirect(w, r, "/", 302)
+	return
 }
