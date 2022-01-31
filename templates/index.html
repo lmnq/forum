@@ -10,7 +10,7 @@
     <div>
         {{ range . }}
         <div>
-            <a href="/post/{{ .ID }}"><pre>{{ .ID }}</pre></a>
+            <a href="/post?id={{ .ID }}"><pre>{{ .ID }}</pre></a>
             <pre>{{ .Author }}</pre>
             <pre>{{ .Title }}</pre>
             <pre>{{ .Content }}</pre>

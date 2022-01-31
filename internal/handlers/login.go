@@ -13,6 +13,7 @@ func (f *Forum) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
 	// // Creating UUID Version 4
 	// // panic on error
 	// u1 := uuid.Must(uuid.NewV4(), nil)

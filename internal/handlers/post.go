@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/internal/app"
 	"html/template"
 	"log"
@@ -20,11 +21,13 @@ func (f *Forum) PostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// id, err := strconv.Atoi(r.FormValue("postID"))
-	id , err := strconv.Atoi(r.URL.Path[6:])
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	// id, err := strconv.Atoi(r.URL.Path[6:])
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	fmt.Println(id)
 	post, err := f.Service.GetPost(id)
 	if err != nil {
 		log.Println(err)
