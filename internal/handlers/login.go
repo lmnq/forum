@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-// LoginHandler ..
-func (f *Forum) LoginHandler(w http.ResponseWriter, r *http.Request) {
+// LoginGetHandler ..
+func (f *Forum) LoginGetHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/login.html")
 	if err != nil {
 		log.Println(err)

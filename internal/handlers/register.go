@@ -7,27 +7,19 @@ import (
 	"net/http"
 )
 
-// RegisterHandler ..
-func (f *Forum) RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/register" {
-		// Error
+// RegisterGetHandler ..
+func (f *Forum) RegisterGetHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/register.html")
+	if err != nil {
+		log.Println(err)
 		return
 	}
-	if r.Method == http.MethodGet {
-		tmpl, err := template.ParseFiles("templates/register.html")
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		tmpl.Execute(w, nil)
-		return
-	}
-	if r.Method != http.MethodPost {
-		// Error
-		w.WriteHeader(405)
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
+	tmpl.Execute(w, nil)
+	return
+}
+
+// RegisterPostHandler ..
+func (f *Forum) RegisterPostHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		return
 	}
@@ -36,12 +28,12 @@ func (f *Forum) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}
-	err := f.Service.Store.RegisterUser(user)
+	err := f.Service.RegisterUser(user)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "invalid data", http.StatusBadRequest)
 		return
 	}
-	http.Redirect(w, r, "/", 302)
+	http.Redirect(w, r, "/", 301)
 	return
 }

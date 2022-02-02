@@ -52,10 +52,7 @@ func (r *Router) getHandler(method, path string) http.HandlerFunc {
 	for _, route := range r.routes {
 		re := regexp.MustCompile(route.Pattern)
 		if route.Method == method && re.MatchString(path) {
-			// match := re.FindStringSubmatch(path)
-			// if match != nil {
 			return route.Handler
-			// }
 		}
 	}
 	return http.NotFoundHandler().ServeHTTP
@@ -67,6 +64,10 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	method := req.Method
 	fmt.Println(method, path)
 
+	if path == "/" {
+		http.Redirect(w, req, "/all", http.StatusMovedPermanently)
+		return
+	}
 	handler := r.getHandler(method, path)
 
 	// handler middleware
