@@ -106,6 +106,12 @@ func initTables(db *sql.DB) error {
 		return err
 	}
 
+	// _, err = db.Exec(`
+	// 	CREATE TABLE IF NOT EXISTS "sessions" (
+	// 		""
+	// 	)
+	// `)
+
 	return nil
 }
 
