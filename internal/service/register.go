@@ -2,10 +2,15 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"forum/internal/app"
+	"net/http"
 	"net/mail"
 	"strings"
+	"time"
 	"unicode"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // RegisterUser ..
@@ -22,6 +27,20 @@ func (s *Service) RegisterUser(user *app.User) error {
 	}
 	err := s.Store.RegisterUser(user)
 	return err
+}
+
+// SetCookie ..
+func (s *Service) SetCookie(email string) (*http.Cookie, error) {
+	uid := uuid.NewV4().String()
+	fmt.Println(uid)
+	expiration := time.Now().Add(24 * time.Hour)
+	cookie := &http.Cookie{
+		Name:    "session",
+		Value:   uid,
+		Expires: expiration,
+	}
+	err := s.Store.SetCookie(cookie, email)
+	return cookie, err
 }
 
 // isValidPassword ..

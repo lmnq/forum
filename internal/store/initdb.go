@@ -106,11 +106,15 @@ func initTables(db *sql.DB) error {
 		return err
 	}
 
-	// _, err = db.Exec(`
-	// 	CREATE TABLE IF NOT EXISTS "sessions" (
-	// 		""
-	// 	)
-	// `)
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS "sessions" (
+			"Value"	TEXT NOT NULL UNIQUE,
+			"Expires"	DATETIME NOT NULL,
+			"user_ID"	INTEGER NOT NULL UNIQUE,
+			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			PRIMARY KEY("Value")
+		);
+	`)
 
 	return nil
 }

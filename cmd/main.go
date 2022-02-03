@@ -24,6 +24,7 @@ func main() {
 	r.POST("/register", forum.RegisterPostHandler)
 	r.GET("/login", forum.LoginGetHandler)
 	// r.POST("/login", forum.LoginGetHandler)
+	r.GET("/post", forum.PostGetHandler)
 	r.GET("/all", forum.IndexHandler)
 	r.POST("/all", forum.IndexHandler)
 	// http.HandleFunc("/", forum.IndexHandler)
