@@ -7,6 +7,6 @@ func (db *ForumDB) RegisterUser(user *app.User) error {
 	_, err := db.DB.Exec(`
 		INSERT INTO users (username, email, password)
 		VALUES (?, ?, ?);`,
-		user.Username, user.Email, user.Password)
+		user.Username, user.Email, user.HashPassword)
 	return err
 }

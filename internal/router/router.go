@@ -64,7 +64,7 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	method := req.Method
 	fmt.Println(method, path)
 
-	if path == "/" {
+	if path == "/" && method == http.MethodGet {
 		http.Redirect(w, req, "/all", http.StatusMovedPermanently)
 		return
 	}

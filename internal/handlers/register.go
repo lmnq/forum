@@ -23,15 +23,21 @@ func (f *Forum) RegisterPostHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		return
 	}
-	user := &app.User{
+	user := &app.User {
 		Username: r.FormValue("username"),
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
 	}
-	err := f.Service.RegisterUser(user)
-	if err != nil {
+	if err := f.Service.IsValidRegisterData(user); err != nil {
+		ErrorHandler(w, http.StatusBadRequest)
 		log.Println(err)
-		http.Error(w, "invalid data", http.StatusBadRequest)
+		return
+	}
+	if err := f.Service.RegisterUser(user); err != nil {
+		// error unique or 500
+		// redirect to the same page with written data
+		log.Println(err)
+		// http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	cookie, err := f.Service.SetCookie(user.Email)
@@ -41,7 +47,6 @@ func (f *Forum) RegisterPostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.SetCookie(w, cookie)
-	// set cookie into db. delete if exists
 	http.Redirect(w, r, "/all", 301)
 	return
 }

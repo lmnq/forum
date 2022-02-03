@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"forum/internal/app"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,26 +14,33 @@ func (f *Forum) LoginGetHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-
-	// // Creating UUID Version 4
-	// // panic on error
-	// u1 := uuid.Must(uuid.NewV4(), nil)
-	// fmt.Printf("UUIDv4: %s\n", u1)
-
-	// // or error handling
-	// u2 := uuid.NewV4()
-	// if err != nil {
-	// 	fmt.Printf("Something went wrong: %s", err)
-	// 	return
-	// }
-	// fmt.Printf("UUIDv4: %s\n", u2)
-
-	// // Parsing UUID from string input
-	// u2, err = uuid.FromString("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
-	// if err != nil {
-	// 	fmt.Printf("Something went wrong: %s", err)
-	// 	return
-	// }
-	// fmt.Printf("Successfully parsed: %s", u2)
 	tmpl.Execute(w, nil)
+}
+
+// LoginPostHandler ..
+func (f *Forum) LoginPostHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Println(err)
+		return
+	}
+	user := &app.User{
+		Email: r.FormValue("email"),
+		Password: r.FormValue("password"),
+	}
+	if err := f.Service.IsValidLoginData(user); err != nil {
+		log.Println(err)
+		ErrorHandler(w, http.StatusBadRequest)
+		return
+	}
+	if err := f.Service.LoginUser(user); err != nil {
+		log.Println(err)
+		return
+	}
+	cookie, err := f.Service.SetCookie(user.Email)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	http.SetCookie(w, cookie)
+	http.Redirect(w, r, "/all", 301)
 }
