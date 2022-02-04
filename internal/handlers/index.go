@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"forum/internal/app"
+	"forum/internal/router"
 	"html/template"
 	"log"
-	"net/http"
 )
 
 // IndexHandler ..
-func (f *Forum) IndexHandler(w http.ResponseWriter, r *http.Request) {
+func (f *Forum) IndexHandler(ctx *router.Context) {
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		log.Println(err)
@@ -23,5 +23,5 @@ func (f *Forum) IndexHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	tmpl.Execute(w, posts)
+	tmpl.Execute(ctx.ResponseWriter, posts)
 }
