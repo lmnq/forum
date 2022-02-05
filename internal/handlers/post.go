@@ -5,6 +5,7 @@ import (
 	"forum/internal/router"
 	"html/template"
 	"log"
+	"net/http"
 	"strconv"
 )
 
@@ -19,14 +20,8 @@ func (f *Forum) PostGetHandler(ctx *router.Context) {
 	if err != nil {
 		return
 	}
-	// slug := router.GetField(r, 0)
-	slug := ctx.Params[0]
-	id, err := strconv.Atoi(slug)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	// id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	idparam := ctx.Params[0]
+	id, _ := strconv.Atoi(idparam)
 	// if err != nil {
 	// 	log.Println(err)
 	// 	return
@@ -34,11 +29,13 @@ func (f *Forum) PostGetHandler(ctx *router.Context) {
 	post, err := f.Service.GetPost(id)
 	if err != nil {
 		log.Println(err)
+		ctx.WriteError(http.StatusNotFound)
 		return
 	}
 	comments, err := f.Service.GetCommentsToPost(post)
 	if err != nil {
 		log.Println(err)
+		ctx.WriteError(http.StatusInternalServerError)
 		return
 	}
 	data := &postData{
@@ -46,5 +43,4 @@ func (f *Forum) PostGetHandler(ctx *router.Context) {
 		Comments: comments,
 	}
 	tmpl.Execute(ctx.ResponseWriter, data)
-	return
 }

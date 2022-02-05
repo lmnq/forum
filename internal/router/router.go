@@ -1,76 +1,89 @@
 package router
 
-// import (
-// 	"fmt"
-// 	"net/http"
-// 	"regexp"
-// )
+import (
+	"net/http"
+	"regexp"
+	"strings"
+)
 
-// // Route ..
-// type Route struct {
-// 	Method  string
-// 	Pattern string
-// 	Handler http.HandlerFunc
-// }
+// Handler ..
+type Handler func(*Context)
 
-// // Router ..
-// type Router struct {
-// 	routes []Route
-// }
+// Route ..
+type Route struct {
+	Method  string
+	Pattern *regexp.Regexp
+	Handler Handler
+}
 
-// // NewRouter ..
-// func NewRouter() *Router {
-// 	return &Router{}
-// }
+// Router ..
+type Router struct {
+	Routes       []Route
+	DefaultRoute Handler
+}
 
-// // AddRoute ..
-// func (r *Router) AddRoute(method, path string, handler http.HandlerFunc) {
-// 	r.routes = append(r.routes, Route{Method: method, Pattern: path, Handler: handler})
-// }
+// NewRouter ..
+func NewRouter() *Router {
+	return &Router{
+		// DefaultRoute: handlers.ErrorHandler(),
+	}
+}
 
-// // GET ..
-// func (r *Router) GET(path string, handler http.HandlerFunc) {
-// 	r.AddRoute("GET", path, handler)
-// }
+// addRoute ..
+func (r *Router) addRoute(method, path string, handler Handler) {
+	re := regexp.MustCompile("^" + path + "$")
+	route := Route{Method: method, Pattern: re, Handler: handler}
+	r.Routes = append(r.Routes, route)
+}
 
-// // POST ..
-// func (r *Router) POST(path string, handler http.HandlerFunc) {
-// 	r.AddRoute("POST", path, handler)
-// }
+// GET ..
+func (r *Router) GET(path string, handler Handler) {
+	r.addRoute("GET", path, handler)
+}
 
-// // PUT ..
-// func (r *Router) PUT(path string, handler http.HandlerFunc) {
-// 	r.AddRoute("PUT", path, handler)
-// }
+// POST ..
+func (r *Router) POST(path string, handler Handler) {
+	r.addRoute("POST", path, handler)
+}
 
-// // DELETE ..
-// func (r *Router) DELETE(path string, handler http.HandlerFunc) {
-// 	r.AddRoute("DELETE", path, handler)
-// }
+// PUT ..
+func (r *Router) PUT(path string, handler Handler) {
+	r.addRoute("PUT", path, handler)
+}
 
-// func (r *Router) getHandler(method, path string) http.HandlerFunc {
-// 	for _, route := range r.routes {
-// 		re := regexp.MustCompile(route.Pattern)
-// 		if route.Method == method && re.MatchString(path) {
-// 			return route.Handler
-// 		}
-// 	}
-// 	return http.NotFoundHandler().ServeHTTP
-// }
+// DELETE ..
+func (r *Router) DELETE(path string, handler Handler) {
+	r.addRoute("DELETE", path, handler)
+}
 
-// // ServeHTTP ..
-// func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-// 	path := req.URL.Path
-// 	method := req.Method
-// 	fmt.Println(method, path)
+// Serve ..
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	ctx := &Context{ResponseWriter: w, Request: req}
+	var allow []string
+	for _, route := range r.Routes {
+		matches := route.Pattern.FindStringSubmatch(req.URL.Path)
+		if len(matches) > 0 {
+			if req.Method != route.Method {
+				allow = append(allow, route.Method)
+				continue
+			}
 
-// 	if path == "/" && method == http.MethodGet {
-// 		http.Redirect(w, req, "/all", http.StatusMovedPermanently)
-// 		return
-// 	}
-// 	handler := r.getHandler(method, path)
+			if len(matches) > 1 {
+				ctx.Params = matches[1:]
+			}
 
-// 	// handler middleware
-
-// 	handler(w, req)
-// }
+			route.Handler(ctx)
+			return
+		}
+	}
+	if len(allow) > 0 {
+		w.Header().Set("Allow", strings.Join(allow, ", "))
+		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if req.URL.Path == "/" {
+		http.Redirect(ctx.ResponseWriter, ctx.Request, "/all", 301)
+	}
+	http.NotFound(w, req)
+	//defaultroute
+}

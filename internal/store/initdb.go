@@ -7,17 +7,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// ForumDB ..
-type ForumDB struct {
-	DB *sql.DB
-}
-
-// NewDataBase ..
-func NewDataBase() (*ForumDB, error) {
-	db, err := initDB()
-	return &ForumDB{DB: db}, err
-}
-
 // InitDB ..
 func initDB() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "./forum.db?_foreign_keys=on")
@@ -33,9 +22,6 @@ func initDB() (*sql.DB, error) {
 	if err = insertData(db); err != nil {
 		return nil, err
 	}
-	// if err = deleteUser(db); err != nil {
-	// 	return nil, err
-	// }
 
 	return db, nil
 }
@@ -116,6 +102,22 @@ func initTables(db *sql.DB) error {
 		);
 	`)
 
+	_, err = db.Exec(`
+		CREATE TABLE "votes" (
+			"ID"	INTEGER NOT NULL UNIQUE,
+			"status"	INTEGER NOT NULL,
+			"entity"	TEXT NOT NULL,
+			"entity_ID"	INTEGER NOT NULL,
+			"user_ID"	INTEGER NOT NULL,
+			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			PRIMARY KEY("ID" AUTOINCREMENT),
+			UNIQUE("entity", "entity_ID", "user_ID")
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -153,17 +155,12 @@ func insertData(db *sql.DB) error {
 		return err
 	}
 
-	return nil
-}
-
-func deleteUser(db *sql.DB) error {
-	_, err := db.Exec(`
-		DELETE FROM users
-		WHERE ID = 1;
+	_, err = db.Exec(`
+		INSERT INTO votes (status, entity, entity_ID, user_ID)
+		VALUES (1, "post", 1, 2);
 	`)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
