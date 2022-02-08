@@ -20,7 +20,7 @@ func (f *Forum) IndexHandler(ctx *router.Context) {
 		Post     *app.Post
 		Comments []*app.Comment
 	}
-	posts, err := f.Service.GetAllPosts(0)
+	posts, err := f.Service.GetAllPosts(2)
 	if err != nil {
 		log.Println(err)
 		ctx.WriteError(http.StatusInternalServerError)

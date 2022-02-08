@@ -20,16 +20,16 @@ func main() {
 	defer forum.Service.Store.DB.Close()
 
 	r := router.NewRouter()
-	
+
 	r.GET("/all", forum.IndexHandler)
 	r.GET("/register", forum.RegisterGetHandler)
 	r.POST("/register", forum.RegisterPostHandler)
 	r.GET("/login", forum.LoginGetHandler)
 	r.POST("/login", forum.LoginPostHandler)
-	r.GET("/post/([0-9]+)", forum.PostGetHandler)
-	
-	fileServer := http.FileServer(http.Dir("./static/css/"))
-	http.Handle("/static/", http.StripPrefix("/static/css", fileServer))
+	r.GET("/post/:postID", forum.PostGetHandler)
+
+	fileServer := http.FileServer(http.Dir("./static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
 
 	http.Handle("/", r)
 	fmt.Println("server running on http://localhost:8080")

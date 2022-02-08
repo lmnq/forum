@@ -1,6 +1,8 @@
 package store
 
-import "forum/internal/app"
+import (
+	"forum/internal/app"
+)
 
 // GetAllPosts ..
 func (db *ForumDB) GetAllPosts(userID int) ([]*app.Post, error) {
@@ -19,11 +21,11 @@ func (db *ForumDB) GetAllPosts(userID int) ([]*app.Post, error) {
 	for rows.Next() {
 		post := &app.Post{}
 		rows.Scan(&post.ID, &post.Title, &post.Content, &post.Author)
-		// categories, err := db.GetCategoriesToPost(post.ID)
-		// if err != nil {
-		// 	return posts, err
-		// }
-		// post.Categories = categories
+		categories, err := db.GetCategoriesToPost(post.ID)
+		if err != nil {
+			return posts, err
+		}
+		post.Categories = categories
 		votes, err := db.GetVotesToEntity("post", post.ID, userID)
 		if err != nil {
 			return posts, err

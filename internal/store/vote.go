@@ -3,10 +3,10 @@ package store
 // GetVotesToEntity ..
 func (db *ForumDB) GetVotesToEntity(entityname string, entityID, userID int) ([2]int, error) {
 	row := db.DB.QueryRow(`
-		SELECT SUM(status),
-			SUM(CASE WHEN user_ID = ?
+		SELECT ifnull(SUM(status), 0),
+			CASE WHEN user_ID = ?
 			THEN status ELSE 0
-			END) as vote
+			END as vote
 		FROM votes WHERE entity = ? AND entity_ID = ?;
 	`, userID, entityname, entityID)
 	var numVotes, vote int

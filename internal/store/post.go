@@ -37,7 +37,7 @@ func (db *ForumDB) GetCommentsToPost(post *app.Post) ([]*app.Comment, error) {
 func (db *ForumDB) GetCategoriesToPost(postID int) ([]string, error) {
 	categories := []string{}
 	rows, err := db.DB.Query(`
-		SELECT categories.name
+		SELECT c.name
 		FROM posts_categories AS pc INNER JOIN posts ON pc.post_ID = posts.ID
 		INNER JOIN categories AS c ON pc.category_ID = c.ID WHERE posts.ID = ?;
 	`, postID)

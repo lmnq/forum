@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create Post</title>
+</head>
+<body>
+    <div>
+        <form action="/post/create" method="post">
+            <input type="text" name="title" required>
+            <textarea name="content" required></textarea>
+            {{ range .}}
+            <input type="checkbox" name="categories">
+            {{ end }}
+        </form>
+    </div>
+</body>
+</html>

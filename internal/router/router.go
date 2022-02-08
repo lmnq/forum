@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -14,6 +15,7 @@ type Route struct {
 	Method  string
 	Pattern *regexp.Regexp
 	Handler Handler
+	Keys    []string
 }
 
 // Router ..
@@ -30,35 +32,59 @@ func NewRouter() *Router {
 }
 
 // addRoute ..
-func (r *Router) addRoute(method, path string, handler Handler) {
-	re := regexp.MustCompile("^" + path + "$")
-	route := Route{Method: method, Pattern: re, Handler: handler}
+func (r *Router) addRoute(method, pattern string, handler Handler) {
+	re, keys := readPatternAndKeys(pattern)
+	route := Route{Method: method, Pattern: re, Handler: handler, Keys: keys}
 	r.Routes = append(r.Routes, route)
 }
 
+func readPatternAndKeys(pattern string) (*regexp.Regexp, []string) {
+	var keys []string
+	segments := strings.Split(pattern, "/")
+
+	for i, v := range segments {
+		switch {
+		case strings.HasPrefix(v, ":"):
+			keys = append(keys, v[1:])
+			segments[i] = `([0-9]+)`
+		case v == "*":
+			keys = append(keys, fmt.Sprintf("param%d", i))
+			segments[i] = `/([^/]+)`
+		}
+	}
+
+	path := fmt.Sprintf("^%s$", strings.Join(segments, "/"))
+
+	return regexp.MustCompile(path), keys
+}
+
 // GET ..
-func (r *Router) GET(path string, handler Handler) {
-	r.addRoute("GET", path, handler)
+func (r *Router) GET(pattern string, handler Handler) {
+	r.addRoute("GET", pattern, handler)
 }
 
 // POST ..
-func (r *Router) POST(path string, handler Handler) {
-	r.addRoute("POST", path, handler)
+func (r *Router) POST(pattern string, handler Handler) {
+	r.addRoute("POST", pattern, handler)
 }
 
 // PUT ..
-func (r *Router) PUT(path string, handler Handler) {
-	r.addRoute("PUT", path, handler)
+func (r *Router) PUT(pattern string, handler Handler) {
+	r.addRoute("PUT", pattern, handler)
 }
 
 // DELETE ..
-func (r *Router) DELETE(path string, handler Handler) {
-	r.addRoute("DELETE", path, handler)
+func (r *Router) DELETE(pattern string, handler Handler) {
+	r.addRoute("DELETE", pattern, handler)
 }
 
 // Serve ..
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	ctx := &Context{ResponseWriter: w, Request: req}
+	ctx := &Context{
+		ResponseWriter: w,
+		Request:        req,
+		Params:         make(map[string]string),
+	}
 	var allow []string
 	for _, route := range r.Routes {
 		matches := route.Pattern.FindStringSubmatch(req.URL.Path)
@@ -68,8 +94,9 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				continue
 			}
 
-			if len(matches) > 1 {
-				ctx.Params = matches[1:]
+			if len(matches) > 1 && len(route.Keys) == len(matches[1:]) {
+				// ctx.Params = matches[1:]
+				ctx.setURLValues(route.Keys, matches[1:])
 			}
 
 			route.Handler(ctx)
@@ -78,12 +105,20 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	if len(allow) > 0 {
 		w.Header().Set("Allow", strings.Join(allow, ", "))
-		http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
+		ctx.WriteError(http.StatusMethodNotAllowed)
+		// http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	if req.URL.Path == "/" {
-		http.Redirect(ctx.ResponseWriter, ctx.Request, "/all", 301)
+		if req.Method == http.MethodGet {
+			http.Redirect(ctx.ResponseWriter, ctx.Request, "/all", 301)
+			return
+		}
+		w.Header().Set("Allow", "GET")
+		ctx.WriteError(http.StatusMethodNotAllowed)
+		return
 	}
-	http.NotFound(w, req)
+	// http.NotFound(w, req)
+	ctx.WriteError(http.StatusNotFound)
 	//defaultroute
 }

@@ -18,9 +18,10 @@ type postData struct {
 func (f *Forum) PostGetHandler(ctx *router.Context) {
 	tmpl, err := template.ParseFiles("templates/post.html")
 	if err != nil {
+		ctx.WriteError(http.StatusInternalServerError)
 		return
 	}
-	idparam := ctx.Params[0]
+	idparam := ctx.Params["postID"]
 	id, _ := strconv.Atoi(idparam)
 	// if err != nil {
 	// 	log.Println(err)
