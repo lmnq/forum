@@ -90,3 +90,8 @@ func isValidPasswordUni(password string) bool {
 	}
 	return hasMinLen && hasUpper && hasLower && hasNumber && hasSpecial
 }
+
+// isValidLen ..
+func isValidLen(Data string, min, max int) bool {
+	return len(Data) >= min && len(Data) <= max
+}

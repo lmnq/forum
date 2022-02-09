@@ -51,3 +51,30 @@ func (db *ForumDB) GetCategoriesToPost(postID int) ([]string, error) {
 	}
 	return categories, nil
 }
+
+// AddNewPost ..
+func (db *ForumDB) AddNewPost(post *app.Post) (int, error) {
+	tx, err := db.DB.Begin()
+	if err != nil {
+		return 0, err
+	}
+
+	res, err := tx.Exec(`
+		INSERT INTO
+				posts (title, content, author_ID)
+		VALUES
+				(?, ?, ?);
+	`, post.Title, post.Content, post.Author)
+
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+	// add categories by id
+}

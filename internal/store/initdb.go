@@ -45,7 +45,7 @@ func initTables(db *sql.DB) error {
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"title"	TEXT NOT NULL DEFAULT 'untitled',
 			"content"	TEXT NOT NULL,
-			"authorID"	INTEGER NOT NULL,
+			"author_ID"	INTEGER NOT NULL,
 			FOREIGN KEY("authorID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
 		);
@@ -162,5 +162,32 @@ func insertData(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
+
+	_, err = db.Exec(`
+		INSERT INTO categories (name)
+		VALUES
+			("Popular Science"),
+			("Information Security"),
+			("Programming"),
+			("Game Development"),
+			("Website Development"),
+			("Algorithms"),
+			("Open Source"),
+			("DevOps"),
+			("Games"),
+			("Golang"),
+			("Python"),
+			("Rust"),
+			("JavaScript"),
+			("Java"),
+			("C"),
+			("C++"),
+			("C#"),
+			("Kotlin");
+	`)
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }

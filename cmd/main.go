@@ -26,6 +26,7 @@ func main() {
 	r.POST("/register", forum.RegisterPostHandler)
 	r.GET("/login", forum.LoginGetHandler)
 	r.POST("/login", forum.LoginPostHandler)
+	r.GET("/post/create", forum.CreatePostGetHandler)
 	r.GET("/post/:postID", forum.PostGetHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
