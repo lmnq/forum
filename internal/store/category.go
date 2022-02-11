@@ -1,17 +1,20 @@
 package store
 
-import "database/sql"
+import "forum/internal/app"
 
 // GetAllCategories ..
-func (db *ForumDB) GetAllCategories() ([]string, error) {
-	rows, err := db.DB.Query(`SELECT name FROM categories`)
+func (db *ForumDB) GetAllCategories() ([]app.Category, error) {
+	rows, err := db.DB.Query(`SELECT * FROM categories`)
 	if err != nil {
-		return []string{}, err
+		return nil, err
 	}
-	var categories []string
-	var category string
+	var categories []app.Category
+	category := app.Category{}
 	for rows.Next() {
-		rows.Scan(&category)
+		err = rows.Scan(&category.ID, &category.Name)
+		if err != nil {
+			return nil, err
+		}
 		categories = append(categories, category)
 	}
 	return categories, nil

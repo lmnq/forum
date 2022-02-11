@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"forum/internal/app"
 	"forum/internal/router"
 	"html/template"
@@ -24,10 +25,15 @@ func (f *Forum) CreatePostGetHandler(ctx *router.Context) {
 
 // CreatePostPostHandler ..
 func (f *Forum) CreatePostPostHandler(ctx *router.Context) {
-	post := &app.Post{
+	tmpCategories, err := f.Service.GetCategoriesFromInput(ctx.Request.Form["category"])
+	if err != nil {
+		ctx.WriteError(http.StatusBadRequest)
+		return
+	}
+	post := app.Post{
 		Title:      ctx.Request.FormValue("title"),
 		Content:    ctx.Request.FormValue("content"),
-		Categories: ctx.Request.Form["category"],
+		Categories: tmpCategories,
 	}
 	categories, err := f.Service.GetAllCategories()
 	if err != nil {
@@ -38,5 +44,6 @@ func (f *Forum) CreatePostPostHandler(ctx *router.Context) {
 		ctx.WriteError(http.StatusBadRequest)
 		return
 	}
-	// addnewpost
+	postID, err := f.Service.AddNewPost(post)
+	http.Redirect(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("/post/%d", postID), 302)
 }

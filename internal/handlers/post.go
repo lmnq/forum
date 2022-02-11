@@ -10,8 +10,8 @@ import (
 )
 
 type postData struct {
-	Post     *app.Post
-	Comments []*app.Comment
+	Post     app.Post
+	Comments []app.Comment
 }
 
 // PostGetHandler ..
@@ -39,7 +39,7 @@ func (f *Forum) PostGetHandler(ctx *router.Context) {
 		ctx.WriteError(http.StatusInternalServerError)
 		return
 	}
-	data := &postData{
+	data := postData{
 		Post:     post,
 		Comments: comments,
 	}

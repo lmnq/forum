@@ -46,7 +46,7 @@ func initTables(db *sql.DB) error {
 			"title"	TEXT NOT NULL DEFAULT 'untitled',
 			"content"	TEXT NOT NULL,
 			"author_ID"	INTEGER NOT NULL,
-			FOREIGN KEY("authorID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY("author_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
 		);
 	`)
@@ -134,7 +134,7 @@ func insertData(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		INSERT INTO posts (title, content, authorID)
+		INSERT INTO posts (title, content, author_ID)
 		VALUES
 				("title1", "content1", 1),
 				("title2", "content2", 2),
@@ -188,6 +188,6 @@ func insertData(db *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }

@@ -8,5 +8,5 @@ type Post struct {
 	Author     string
 	Title      string
 	Content    string
-	Categories []string
+	Categories []Category
 }

@@ -13,7 +13,7 @@ func (db *ForumDB) GetAllPosts(userID int) ([]*app.Post, error) {
 			title,
 			content,
 			username
-	FROM posts INNER JOIN users ON posts.authorID = users.ID;
+	FROM posts INNER JOIN users ON posts.author_ID = users.ID;
 	`)
 	if err != nil {
 		return posts, err

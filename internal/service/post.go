@@ -6,19 +6,19 @@ import (
 )
 
 // GetCommentsToPost ..
-func (s *Service) GetCommentsToPost(post *app.Post) ([]*app.Comment, error) {
+func (s *Service) GetCommentsToPost(post app.Post) ([]app.Comment, error) {
 	comments, err := s.Store.GetCommentsToPost(post)
 	return comments, err
 }
 
 // GetPost ..
-func (s *Service) GetPost(id int) (*app.Post, error) {
+func (s *Service) GetPost(id int) (app.Post, error) {
 	post, err := s.Store.GetPost(id)
 	return post, err
 }
 
 // ValidatePostInput ..
-func (s *Service) ValidatePostInput(post *app.Post, categories []string) error {
+func (s *Service) ValidatePostInput(post app.Post, categories []app.Category) error {
 
 	switch false {
 	case isValidLen(post.Title, 2, 64):
@@ -27,21 +27,23 @@ func (s *Service) ValidatePostInput(post *app.Post, categories []string) error {
 		return errors.New("invalid content")
 	case len(post.Categories) > 0:
 		return errors.New("no category")
+	case len(post.Categories) <= 4:
+		return errors.New("too many categories")
 	}
 
-	checked := make(map[string]bool)
+	checked := make(map[int]bool)
 
 	for _, v := range post.Categories {
 		for _, k := range categories {
-			if v == k {
-				if checked[v] {
+			if v.ID == k.ID {
+				if checked[v.ID] {
 					return errors.New("repeating category name")
 				}
-				checked[v] = true
+				checked[v.ID] = true
 				break
 			}
 		}
-		if !checked[v] {
+		if !checked[v.ID] {
 			return errors.New("invalid category name")
 		}
 	}
@@ -50,6 +52,7 @@ func (s *Service) ValidatePostInput(post *app.Post, categories []string) error {
 }
 
 // AddNewPost ..
-func (s *Service) AddNewPost(post *app.Post) (int, error) {
-	
+func (s *Service) AddNewPost(post app.Post) (int, error) {
+	postID, err := s.Store.AddNewPost(post)
+	return postID, err
 }
