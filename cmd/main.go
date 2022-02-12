@@ -15,6 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	go store.DeleteExpiredSession(forumdb.DB)
 	srv := service.NewService(forumdb)
 	forum := handlers.NewForum(srv)
 	defer forum.Service.Store.DB.Close()
@@ -27,6 +28,7 @@ func main() {
 	r.GET("/login", forum.LoginGetHandler)
 	r.POST("/login", forum.LoginPostHandler)
 	r.GET("/post/create", forum.CreatePostGetHandler)
+	r.POST("/post/create", forum.AuthMiddleware(forum.CreatePostPostHandler))
 	r.GET("/post/:postID", forum.PostGetHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))

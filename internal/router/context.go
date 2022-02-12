@@ -55,6 +55,12 @@ func (ctx *Context) WriteError(status int) {
 			Code: status,
 			Text: "Method Not Allowed",
 		})
+	case 401:
+		w.WriteHeader(http.StatusUnauthorized)
+		temp.Execute(w, ans{
+			Code: status,
+			Text: "Unauthorized",
+		})
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 		temp.Execute(w, ans{

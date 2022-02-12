@@ -3,6 +3,7 @@ package store
 import (
 	"database/sql"
 	"forum/internal/app"
+	"log"
 	"net/http"
 	"time"
 )
@@ -44,4 +45,23 @@ func (db *ForumDB) CheckForSession(user *app.User) error {
 
 	}
 	return nil
+}
+
+// GetUserSession ..
+func (db *ForumDB) GetUserSession(session string) (int, error) {
+	var userID int
+	row := db.DB.QueryRow("SELECT user_ID FROM sessions WHERE Value = ?;", session)
+	err := row.Scan(&userID)
+	return userID, err
+}
+
+// DeleteExpiredSession ..
+func DeleteExpiredSession(db *sql.DB) {
+	for {
+		_, err := db.Exec("DELETE FROM sessions WHERE expires < ?", time.Now())
+		if err != nil {
+			log.Println(err)
+		}
+		time.Sleep(10 * time.Second)
+	}
 }
