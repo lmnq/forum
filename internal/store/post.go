@@ -9,58 +9,8 @@ import (
 func (db *ForumDB) GetPost(id int) (app.Post, error) {
 	row := db.DB.QueryRow("SELECT * FROM posts where ID = ?;", id)
 	post := app.Post{}
-	err := row.Scan(&post.ID, &post.Author, &post.Title, &post.Content)
-	if err != nil {
-		return post, err
-	}
-	categories, err := db.GetCategoriesToPost(post.ID)
-	if err != nil {
-		return post, err
-	}
-	post.Categories = categories
-	return post, nil
-}
-
-// GetCommentsToPost ..
-func (db *ForumDB) GetCommentsToPost(post app.Post) ([]app.Comment, error) {
-	comments := []app.Comment{}
-	rows, err := db.DB.Query(`
-		SELECT
-				comments.ID,
-				posts.ID,
-				users.username,
-				comments.content
-		FROM comments INNER JOIN users ON comments.user_ID = users.ID
-		INNER JOIN posts ON comments.post_ID = posts.ID WHERE posts.ID = ?;
-		`, post.ID)
-	if err != nil {
-		return comments, err
-	}
-	for rows.Next() {
-		comment := app.Comment{}
-		rows.Scan(&comment.ID, &comment.PostID, &comment.Author, &comment.Content)
-		comments = append(comments, comment)
-	}
-	return comments, nil
-}
-
-// GetCategoriesToPost ..
-func (db *ForumDB) GetCategoriesToPost(postID int) ([]app.Category, error) {
-	categories := []app.Category{}
-	rows, err := db.DB.Query(`
-		SELECT c.ID, c.name
-		FROM posts_categories AS pc INNER JOIN posts ON pc.post_ID = posts.ID
-		INNER JOIN categories AS c ON pc.category_ID = c.ID WHERE posts.ID = ?;
-	`, postID)
-	if err != nil {
-		return categories, err
-	}
-	for rows.Next() {
-		category := app.Category{}
-		rows.Scan(&category.ID, &category.Name)
-		categories = append(categories, category)
-	}
-	return categories, nil
+	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID)
+	return post, err
 }
 
 // AddNewPost ..

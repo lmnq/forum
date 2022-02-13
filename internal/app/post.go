@@ -4,10 +4,11 @@ package app
 type Post struct {
 	ID         int
 	Votes      int
-	Status     int
+	Rate       int
 	AuthorID   int
 	Author     string
 	Title      string
 	Content    string
 	Categories []Category
+	Comments   []Comment
 }

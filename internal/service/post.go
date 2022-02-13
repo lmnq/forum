@@ -2,19 +2,37 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"forum/internal/app"
 )
-
-// GetCommentsToPost ..
-func (s *Service) GetCommentsToPost(post app.Post) ([]app.Comment, error) {
-	comments, err := s.Store.GetCommentsToPost(post)
-	return comments, err
-}
 
 // GetPost ..
 func (s *Service) GetPost(id int) (app.Post, error) {
 	post, err := s.Store.GetPost(id)
-	return post, err
+	if err != nil {
+		fmt.Println("1111")
+		return post, err
+	}
+	categories, err := s.Store.GetCategoriesToPost(post.ID)
+	if err != nil {
+		fmt.Println("2222")
+		return post, err
+	}
+	post.Categories = categories
+	comments, err := s.Store.GetCommentsToPost(post.ID)
+	if err != nil {
+		fmt.Println("333333")
+		return post, err
+	}
+	post.Comments = comments
+	votes, rate, err := s.Store.GetVotesToEntity("post", post.ID, post.AuthorID)
+	if err != nil {
+		fmt.Println("444444")
+		return post, err
+	}
+	post.Votes = votes
+	post.Rate = rate
+	return post, nil
 }
 
 // ValidatePostInput ..

@@ -19,3 +19,22 @@ func (db *ForumDB) GetAllCategories() ([]app.Category, error) {
 	}
 	return categories, nil
 }
+
+// GetCategoriesToPost ..
+func (db *ForumDB) GetCategoriesToPost(postID int) ([]app.Category, error) {
+	categories := []app.Category{}
+	rows, err := db.DB.Query(`
+		SELECT c.ID, c.name
+		FROM posts_categories AS pc INNER JOIN posts ON pc.post_ID = posts.ID
+		INNER JOIN categories AS c ON pc.category_ID = c.ID WHERE posts.ID = ?;
+	`, postID)
+	if err != nil {
+		return categories, err
+	}
+	for rows.Next() {
+		category := app.Category{}
+		rows.Scan(&category.ID, &category.Name)
+		categories = append(categories, category)
+	}
+	return categories, nil
+}

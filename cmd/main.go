@@ -30,6 +30,7 @@ func main() {
 	r.GET("/post/create", forum.CreatePostGetHandler)
 	r.POST("/post/create", forum.AuthMiddleware(forum.CreatePostPostHandler))
 	r.GET("/post/:postID", forum.PostGetHandler)
+	r.POST("/post/:postID/comment", forum.AuthMiddleware(forum.CommentPostHandler))
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))

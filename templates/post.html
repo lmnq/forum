@@ -9,14 +9,23 @@
 <body>
     <div>
         <div>
-            <pre>{{ .Post.ID }}</pre>
-            <pre>{{ .Post.Author }}</pre>
-            <pre>{{ .Post.Title }}</pre>
-            <pre>{{ .Post.Content }}</pre>
+            <pre>{{ .ID }}</pre>
+            <pre>{{ .AuthorID }}</pre>
+            <pre>{{ .Title }}</pre>
+            <pre>{{ .Content }}</pre>
+            <pre>{{ .Votes }}</pre>
+            <pre>{{ .Rate }}</pre>
         </div>
         <br>
 
-        {{ range .Comments}}
+        <div>
+            <form action="/post/{{ .ID }}/comment" method="post">
+                <input type="text" name="comment" required>
+                <button type="submit">comment</button>
+            </form>
+        </div>
+
+        {{ range .Comments }}
         <div>
             <pre>{{ .ID }}</pre>
             <pre>{{ .PostID }}</pre>

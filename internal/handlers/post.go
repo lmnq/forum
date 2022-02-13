@@ -21,27 +21,12 @@ func (f *Forum) PostGetHandler(ctx *router.Context) {
 		ctx.WriteError(http.StatusInternalServerError)
 		return
 	}
-	idparam := ctx.Params["postID"]
-	id, _ := strconv.Atoi(idparam)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
-	post, err := f.Service.GetPost(id)
+	postID, _ := strconv.Atoi(ctx.Params["postID"])
+	post, err := f.Service.GetPost(postID)
 	if err != nil {
 		log.Println(err)
 		ctx.WriteError(http.StatusNotFound)
 		return
 	}
-	comments, err := f.Service.GetCommentsToPost(post)
-	if err != nil {
-		log.Println(err)
-		ctx.WriteError(http.StatusInternalServerError)
-		return
-	}
-	data := postData{
-		Post:     post,
-		Comments: comments,
-	}
-	tmpl.Execute(ctx.ResponseWriter, data)
+	tmpl.Execute(ctx.ResponseWriter, post)
 }

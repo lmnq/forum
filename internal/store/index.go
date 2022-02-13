@@ -5,8 +5,8 @@ import (
 )
 
 // GetAllPosts ..
-func (db *ForumDB) GetAllPosts(userID int) ([]*app.Post, error) {
-	posts := []*app.Post{}
+func (db *ForumDB) GetAllPosts(userID int) ([]app.Post, error) {
+	posts := []app.Post{}
 	rows, err := db.DB.Query(`
 	SELECT
 			posts.ID,
@@ -19,19 +19,19 @@ func (db *ForumDB) GetAllPosts(userID int) ([]*app.Post, error) {
 		return posts, err
 	}
 	for rows.Next() {
-		post := &app.Post{}
+		post := app.Post{}
 		rows.Scan(&post.ID, &post.Title, &post.Content, &post.Author)
 		categories, err := db.GetCategoriesToPost(post.ID)
 		if err != nil {
 			return posts, err
 		}
 		post.Categories = categories
-		votes, err := db.GetVotesToEntity("post", post.ID, userID)
+		votes, rate, err := db.GetVotesToEntity("post", post.ID, userID)
 		if err != nil {
 			return posts, err
 		}
-		post.Votes = votes[0]
-		post.Status = votes[1]
+		post.Votes = votes
+		post.Rate = rate
 		posts = append(posts, post)
 	}
 	return posts, nil
