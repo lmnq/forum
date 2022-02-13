@@ -5,6 +5,7 @@ type Post struct {
 	ID         int
 	Votes      int
 	Status     int
+	AuthorID   int
 	Author     string
 	Title      string
 	Content    string

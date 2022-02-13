@@ -1,6 +1,9 @@
 package store
 
-import "forum/internal/app"
+import (
+	"forum/internal/app"
+	"log"
+)
 
 // GetPost ..
 func (db *ForumDB) GetPost(id int) (app.Post, error) {
@@ -64,6 +67,8 @@ func (db *ForumDB) GetCategoriesToPost(postID int) ([]app.Category, error) {
 func (db *ForumDB) AddNewPost(post app.Post) (int, error) {
 	tx, err := db.DB.Begin()
 	if err != nil {
+		log.Println("11111")
+		log.Println(err)
 		return 0, err
 	}
 
@@ -72,15 +77,19 @@ func (db *ForumDB) AddNewPost(post app.Post) (int, error) {
 				posts (title, content, author_ID)
 		VALUES
 				(?, ?, ?);
-	`, post.Title, post.Content, post.Author)
+	`, post.Title, post.Content, post.AuthorID)
 
 	if err != nil {
+		log.Println("2222")
+		log.Println(err)
 		tx.Rollback()
 		return 0, err
 	}
 
 	postID, err := res.LastInsertId()
 	if err != nil {
+		log.Println("333")
+		log.Println(err)
 		tx.Rollback()
 		return 0, err
 	}
@@ -91,8 +100,10 @@ func (db *ForumDB) AddNewPost(post app.Post) (int, error) {
 						posts_categories (post_ID, category_ID)
 				VALUES
 						(?, ?);
-		`, postID, category.ID)
+		`, int(postID), category.ID)
 		if err != nil {
+			log.Println("444")
+			log.Println(err)
 			tx.Rollback()
 			return 0, err
 		}

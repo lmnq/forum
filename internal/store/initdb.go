@@ -74,7 +74,7 @@ func initTables(db *sql.DB) error {
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"name"	TEXT NOT NULL UNIQUE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
-		)
+		);
 	`)
 	if err != nil {
 		return err
@@ -84,9 +84,11 @@ func initTables(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS "posts_categories" (
 			"post_ID"	INTEGER NOT NULL,
 			"category_ID"	INTEGER NOT NULL,
+			FOREIGN KEY("category_ID") REFERENCES "categories"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY("post_ID") REFERENCES "posts"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
 			PRIMARY KEY("post_ID","category_ID"),
 			UNIQUE("post_ID", "category_ID")
-		)
+		);
 	`)
 	if err != nil {
 		return err

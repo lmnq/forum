@@ -2,14 +2,16 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"forum/internal/app"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 // LoginUser ..
-func (s *Service) LoginUser(user *app.User) error {
+func (s *Service) LoginUser(user app.User) error {
 	hashPW, err := s.Store.GetHashPassword(user.Email)
+	fmt.Println("hashed:", hashPW)
 	if err != nil {
 		return err
 	}

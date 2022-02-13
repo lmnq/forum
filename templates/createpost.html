@@ -14,8 +14,8 @@
             <fieldset>
             {{ range .}}
             <div>
-            <input type="checkbox" name="categories" id="{{ . }}" value="{{ . }}">
-            <label for="{{ . }}">{{ . }}</label>
+            <input type="checkbox" name="category" id="{{ .ID }}" value="{{ .ID }}">
+            <label for="{{ .ID }}">{{ .Name }}</label>
             </div>
             {{ end }}
             </fieldset>

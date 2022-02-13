@@ -5,7 +5,9 @@ import (
 	"forum/internal/app"
 	"forum/internal/router"
 	"html/template"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 // CreatePostGetHandler ..
@@ -25,12 +27,15 @@ func (f *Forum) CreatePostGetHandler(ctx *router.Context) {
 
 // CreatePostPostHandler ..
 func (f *Forum) CreatePostPostHandler(ctx *router.Context) {
+	userID, _ := strconv.Atoi(ctx.Params["userID"])
+	ctx.Request.ParseForm()
 	tmpCategories, err := f.Service.GetCategoriesFromInput(ctx.Request.Form["category"])
 	if err != nil {
 		ctx.WriteError(http.StatusBadRequest)
 		return
 	}
 	post := app.Post{
+		AuthorID:   userID,
 		Title:      ctx.Request.FormValue("title"),
 		Content:    ctx.Request.FormValue("content"),
 		Categories: tmpCategories,
@@ -41,9 +46,16 @@ func (f *Forum) CreatePostPostHandler(ctx *router.Context) {
 		return
 	}
 	if err := f.Service.ValidatePostInput(post, categories); err != nil {
+		log.Println(err)
 		ctx.WriteError(http.StatusBadRequest)
 		return
 	}
 	postID, err := f.Service.AddNewPost(post)
+	if err != nil {
+		log.Println(err)
+		ctx.WriteError(http.StatusBadRequest)
+		return
+	}
+	// ctx.ResponseWriter.WriteHeader(http.StatusCreated)
 	http.Redirect(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("/post/%d", postID), 302)
 }

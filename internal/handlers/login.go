@@ -26,16 +26,17 @@ func (f *Forum) LoginPostHandler(ctx *router.Context) {
 		ctx.WriteError(http.StatusBadRequest)
 		return
 	}
-	user := &app.User{
+	user := app.User{
 		Email:    ctx.Request.FormValue("email"),
 		Password: ctx.Request.FormValue("password"),
 	}
-	if err := f.Service.IsValidLoginData(user); err != nil {
-		log.Println(err)
-		ctx.WriteError(http.StatusBadRequest)
-		return
-	}
+	// if err := f.Service.IsValidLoginData(user); err != nil {
+	// 	log.Println(err)
+	// 	ctx.WriteError(http.StatusBadRequest)
+	// 	return
+	// }
 	if err := f.Service.LoginUser(user); err != nil {
+		log.Println("fesf")
 		log.Println(err)
 		ctx.WriteError(http.StatusBadRequest)
 		// 500
