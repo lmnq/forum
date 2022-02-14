@@ -49,5 +49,5 @@ func (f *Forum) LoginPostHandler(ctx *router.Context) {
 		return
 	}
 	http.SetCookie(ctx.ResponseWriter, cookie)
-	http.Redirect(ctx.ResponseWriter, ctx.Request, "/all", 301)
+	http.Redirect(ctx.ResponseWriter, ctx.Request, "/all", 302)
 }

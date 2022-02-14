@@ -25,7 +25,7 @@ func (s *Service) GetPost(id int) (app.Post, error) {
 		return post, err
 	}
 	post.Comments = comments
-	votes, rate, err := s.Store.GetVotesToEntity("post", post.ID, post.AuthorID)
+	votes, rate, err := s.Store.GetVotesToPost(post.ID, post.AuthorID)
 	if err != nil {
 		fmt.Println("444444")
 		return post, err

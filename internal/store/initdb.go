@@ -120,6 +120,38 @@ func initTables(db *sql.DB) error {
 		return err
 	}
 
+	_, err = db.Exec(`
+		CREATE TABLE "post_votes" (
+			"ID"	INTEGER NOT NULL UNIQUE,
+			"rate"	INTEGER NOT NULL,
+			"user_ID"	INTEGER NOT NULL,
+			"post_ID"	INTEGER NOT NULL,
+			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY("post_ID") REFERENCES "posts"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			PRIMARY KEY("ID" AUTOINCREMENT),
+			UNIQUE("user_ID", "post_ID")
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE "comment_votes" (
+			"ID"	INTEGER NOT NULL UNIQUE,
+			"rate"	INTEGER NOT NULL,
+			"user_ID"	INTEGER NOT NULL,
+			"comment_ID"	INTEGER NOT NULL,
+			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY("comment_ID") REFERENCES "comments"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
+			PRIMARY KEY("ID" AUTOINCREMENT),
+			UNIQUE("user_ID", "comment_ID")
+		);
+	`)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

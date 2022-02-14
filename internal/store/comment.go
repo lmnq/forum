@@ -21,6 +21,12 @@ func (db *ForumDB) GetCommentsToPost(postID int) ([]app.Comment, error) {
 	for rows.Next() {
 		comment := app.Comment{}
 		rows.Scan(&comment.ID, &comment.PostID, &comment.Author, &comment.Content, &comment.AuthorID)
+		votes, rate, err := db.GetVotesToComment(comment.ID, comment.AuthorID)
+		if err != nil {
+			return comments, err
+		}
+		comment.Votes = votes
+		comment.Rate = rate
 		comments = append(comments, comment)
 	}
 	return comments, nil

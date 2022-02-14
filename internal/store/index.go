@@ -26,7 +26,7 @@ func (db *ForumDB) GetAllPosts(userID int) ([]app.Post, error) {
 			return posts, err
 		}
 		post.Categories = categories
-		votes, rate, err := db.GetVotesToEntity("post", post.ID, userID)
+		votes, rate, err := db.GetVotesToPost(post.ID, userID)
 		if err != nil {
 			return posts, err
 		}

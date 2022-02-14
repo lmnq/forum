@@ -31,6 +31,8 @@ func main() {
 	r.POST("/post/create", forum.AuthMiddleware(forum.CreatePostPostHandler))
 	r.GET("/post/:postID", forum.PostGetHandler)
 	r.POST("/post/:postID/comment", forum.AuthMiddleware(forum.CommentPostHandler))
+	r.POST("/vote/:postID", forum.AuthMiddleware(forum.VotePostHandler))
+	r.POST("vote/:postID/:commentID", forum.AuthMiddleware(forum.VoteCommentHandler))
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
