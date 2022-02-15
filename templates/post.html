@@ -32,12 +32,19 @@
             </form>
         </div>
 
-        {{ range .Comments }}
+        {{ range $_, $val := .Comments }}
         <div>
-            <pre>{{ .ID }}</pre>
-            <pre>{{ .PostID }}</pre>
-            <pre>{{ .Author }}</pre>
-            <pre>{{ .Content }}</pre>
+            <pre>{{ $val.ID }}</pre>
+            <pre>{{ $val.PostID }}</pre>
+            <pre>{{ $val.Author }}</pre>
+            <pre>{{ $val.Content }}</pre>
+        </div>
+
+        <div>
+            <form action="/vote/{{ .ID }}/{{ $val.ID }}" method="post">
+                <button type="submit" name="rate" value="1"></button>
+                <button type="submit" name="rate" value="-1"></button>
+            </form>
         </div>
         <br>
         {{ end }}

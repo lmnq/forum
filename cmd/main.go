@@ -32,7 +32,7 @@ func main() {
 	r.GET("/post/:postID", forum.PostGetHandler)
 	r.POST("/post/:postID/comment", forum.AuthMiddleware(forum.CommentPostHandler))
 	r.POST("/vote/:postID", forum.AuthMiddleware(forum.VotePostHandler))
-	r.POST("vote/:postID/:commentID", forum.AuthMiddleware(forum.VoteCommentHandler))
+	r.POST("/vote/:postID/:commentID", forum.AuthMiddleware(forum.VoteCommentHandler))
 	r.GET("/category/:categoryID", forum.FilterByCategoryHandler)
 	r.GET("/profile/:profileID/bookmarks", forum.BookmarksHandler)
 
