@@ -23,3 +23,19 @@ func (f *Forum) BookmarksHandler(ctx *router.Context) {
 	}
 	tmpl.Execute(ctx.ResponseWriter, posts)
 }
+
+// ProfilePostsHandler ..
+func (f *Forum) ProfilePostsHandler(ctx *router.Context) {
+	tmpl, err := template.ParseFiles("templates/profile_posts.html")
+	if err != nil {
+		ctx.WriteError(http.StatusInternalServerError)
+		return
+	}
+	profileID, _ := strconv.Atoi(ctx.Params["profileID"])
+	posts, err := f.Service.GetProfilePosts(profileID)
+	if err != nil {
+		ctx.WriteError(http.StatusBadRequest)
+		return
+	}
+	tmpl.Execute(ctx.ResponseWriter, posts)
+}

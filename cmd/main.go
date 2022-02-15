@@ -35,6 +35,7 @@ func main() {
 	r.POST("/vote/:postID/:commentID", forum.AuthMiddleware(forum.VoteCommentHandler))
 	r.GET("/category/:categoryID", forum.FilterByCategoryHandler)
 	r.GET("/profile/:profileID/bookmarks", forum.BookmarksHandler)
+	r.GET("/profile/:profileID/posts", forum.ProfilePostsHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))

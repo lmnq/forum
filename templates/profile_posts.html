@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        {{ range . }}
+        <div>
+            <a href="/post/{{ .ID }}"><pre>{{ .ID }}</pre></a>
+            <pre>{{ .Author }}</pre>
+            <pre>{{ .Title }}</pre>
+            <pre>{{ .Content }}</pre>
+            {{ range .Categories }}
+            <a href="/category/{{ .ID }}"><pre>{{ .Name }}</pre></a>
+            {{ end }}
+            <pre>likes: {{ .Votes }}</pre>
+            <pre>rate: {{ .Rate }}</pre>
+        </div>
+        <br>
+        {{ end }}
+    </div>
+</body>
+</html>
