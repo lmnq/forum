@@ -1,6 +1,9 @@
 package store
 
-import "forum/internal/app"
+import (
+	"forum/internal/app"
+	"log"
+)
 
 // GetAllCategories ..
 func (db *ForumDB) GetAllCategories() ([]app.Category, error) {
@@ -37,4 +40,45 @@ func (db *ForumDB) GetCategoriesToPost(postID int) ([]app.Category, error) {
 		categories = append(categories, category)
 	}
 	return categories, nil
+}
+
+// GetPostsByCategory ..
+func (db *ForumDB) GetPostsByCategory(categoryID, userID int) ([]app.Post, error) {
+	posts := []app.Post{}
+	rows, err := db.DB.Query(`
+		SELECT
+				posts.ID,
+				title,
+				content,
+				username
+		FROM posts INNER JOIN users ON posts.author_ID = users.ID
+		WHERE posts.ID IN (
+							SELECT post_ID FROM posts_categories
+							WHERE category_ID = ?
+						)
+		ORDER BY posts.ID DESC;
+		`, categoryID)
+	if err != nil {
+		return posts, err
+	}
+	for rows.Next() {
+		post := app.Post{}
+		rows.Scan(&post.ID, &post.Title, &post.Content, &post.Author)
+		categories, err := db.GetCategoriesToPost(post.ID)
+		if err != nil {
+			log.Println("2")
+			return posts, err
+		}
+		post.Categories = categories
+		votes, rate, err := db.GetVotesToPost(post.ID, userID)
+		if err != nil {
+			log.Println("3")
+			return posts, err
+		}
+		post.Votes = votes
+		post.Rate = rate
+		posts = append(posts, post)
+	}
+
+	return posts, nil
 }

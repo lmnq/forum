@@ -33,6 +33,8 @@ func main() {
 	r.POST("/post/:postID/comment", forum.AuthMiddleware(forum.CommentPostHandler))
 	r.POST("/vote/:postID", forum.AuthMiddleware(forum.VotePostHandler))
 	r.POST("vote/:postID/:commentID", forum.AuthMiddleware(forum.VoteCommentHandler))
+	r.GET("/category/:categoryID", forum.FilterByCategoryHandler)
+	r.GET("/profile/:profileID/bookmarks", forum.BookmarksHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))

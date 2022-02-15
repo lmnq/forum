@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
 	"forum/internal/app"
 	"strconv"
@@ -28,4 +29,13 @@ func (s *Service) GetCategoriesFromInput(input []string) ([]app.Category, error)
 		unique[v] = true
 	}
 	return categories, nil
+}
+
+// GetPostsByCategory ..
+func (s *Service) GetPostsByCategory(categoryID, userID int) ([]app.Post, error) {
+	posts, err := s.Store.GetPostsByCategory(categoryID, userID)
+	if err != nil && err != sql.ErrNoRows {
+		return posts, err
+	}
+	return posts, nil
 }
