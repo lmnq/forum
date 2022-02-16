@@ -33,6 +33,7 @@ func initTables(db *sql.DB) error {
 			"username"	TEXT NOT NULL,
 			"email"	TEXT NOT NULL UNIQUE,
 			"password"	TEXT NOT NULL,
+			"created"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY("ID" AUTOINCREMENT)
 		);
 	`)
@@ -45,6 +46,7 @@ func initTables(db *sql.DB) error {
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"title"	TEXT NOT NULL DEFAULT 'untitled',
 			"content"	TEXT NOT NULL,
+			"created"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			"author_ID"	INTEGER NOT NULL,
 			FOREIGN KEY("author_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
 			PRIMARY KEY("ID" AUTOINCREMENT)
@@ -58,6 +60,7 @@ func initTables(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS "comments" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"content"	TEXT NOT NULL,
+			"created"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			"user_ID"	INTEGER NOT NULL,
 			"post_ID"	INTEGER NOT NULL,
 			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE,
@@ -105,25 +108,10 @@ func initTables(db *sql.DB) error {
 	`)
 
 	_, err = db.Exec(`
-		CREATE TABLE "votes" (
-			"ID"	INTEGER NOT NULL UNIQUE,
-			"status"	INTEGER NOT NULL,
-			"entity"	TEXT NOT NULL,
-			"entity_ID"	INTEGER NOT NULL,
-			"user_ID"	INTEGER NOT NULL,
-			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
-			PRIMARY KEY("ID" AUTOINCREMENT),
-			UNIQUE("entity", "entity_ID", "user_ID")
-		);
-	`)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(`
 		CREATE TABLE "post_votes" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"rate"	INTEGER NOT NULL,
+			"voted"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			"user_ID"	INTEGER NOT NULL,
 			"post_ID"	INTEGER NOT NULL,
 			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -140,6 +128,7 @@ func initTables(db *sql.DB) error {
 		CREATE TABLE "comment_votes" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"rate"	INTEGER NOT NULL,
+			"voted"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			"user_ID"	INTEGER NOT NULL,
 			"comment_ID"	INTEGER NOT NULL,
 			FOREIGN KEY("user_ID") REFERENCES "users"("ID") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -190,8 +179,8 @@ func insertData(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		INSERT INTO votes (status, entity, entity_ID, user_ID)
-		VALUES (1, "post", 1, 2);
+		INSERT INTO post_votes (rate, post_ID, user_ID)
+		VALUES (1, 1, 2);
 	`)
 	if err != nil {
 		return err

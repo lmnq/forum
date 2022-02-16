@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	go store.DeleteExpiredSession(forumdb.DB)
+	go store.CleanSessions(forumdb.DB)
 	srv := service.NewService(forumdb)
 	forum := handlers.NewForum(srv)
 	defer forum.Service.Store.DB.Close()
@@ -36,6 +36,7 @@ func main() {
 	r.GET("/category/:categoryID", forum.FilterByCategoryHandler)
 	r.GET("/profile/:profileID/bookmarks", forum.BookmarksHandler)
 	r.GET("/profile/:profileID/posts", forum.ProfilePostsHandler)
+	r.GET("/bug", forum.BugHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))

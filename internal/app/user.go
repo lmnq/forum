@@ -1,5 +1,7 @@
 package app
 
+import "time"
+
 // User ..
 type User struct {
 	Logged       bool
@@ -8,4 +10,5 @@ type User struct {
 	Email        string
 	Password     string
 	HashPassword string
+	Created      time.Time
 }

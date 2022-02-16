@@ -1,5 +1,7 @@
 package app
 
+import "time"
+
 // Comment ..
 type Comment struct {
 	ID       int
@@ -9,4 +11,5 @@ type Comment struct {
 	AuthorID int
 	Author   string
 	Content  string
+	Voted    time.Time
 }

@@ -1,6 +1,9 @@
 package store
 
-import "forum/internal/app"
+import (
+	"forum/internal/app"
+	"time"
+)
 
 // GetCommentsToPost ..
 func (db *ForumDB) GetCommentsToPost(postID int) ([]app.Comment, error) {
@@ -36,9 +39,9 @@ func (db *ForumDB) GetCommentsToPost(postID int) ([]app.Comment, error) {
 func (db *ForumDB) AddNewCommentToPost(comment app.Comment) error {
 	_, err := db.DB.Exec(`
 		INSERT INTO
-			comments(content, user_ID, post_ID)
+			comments(content, created, user_ID, post_ID)
 		VALUES
-			(?, ?, ?);
-	`, comment.Content, comment.AuthorID, comment.PostID)
+			(?, ?, ?, ?);
+	`, comment.Content, time.Now(), comment.AuthorID, comment.PostID)
 	return err
 }

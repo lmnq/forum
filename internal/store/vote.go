@@ -1,6 +1,9 @@
 package store
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 // GetVotesToPost ..
 func (db *ForumDB) GetVotesToPost(postID, userID int) (int, int, error) {
@@ -61,10 +64,10 @@ func (db *ForumDB) VotePost(postID, userID int, rate int) error {
 	if err == sql.ErrNoRows || currVoteRate != rate {
 		_, errin := tx.Exec(`
 					INSERT INTO
-							post_votes(rate, user_ID, post_ID)
+							post_votes(rate, voted, user_ID, post_ID)
 					VALUES
-							(?, ?, ?);
-		`, rate, userID, postID)
+							(?, ?, ?, ?);
+		`, rate, time.Now(), userID, postID)
 		if errin != nil {
 			tx.Rollback()
 			return errin

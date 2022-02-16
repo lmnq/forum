@@ -2,44 +2,57 @@ package store
 
 import (
 	"forum/internal/app"
-	"log"
+	"time"
 )
 
 // GetPost ..
 func (db *ForumDB) GetPost(id int) (app.Post, error) {
 	row := db.DB.QueryRow("SELECT * FROM posts where ID = ?;", id)
 	post := app.Post{}
-	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID)
-	return post, err
+	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.Created, &post.AuthorID)
+	if err != nil {
+		return post, err
+	}
+	categories, err := db.GetCategoriesToPost(post.ID)
+	if err != nil {
+		return post, err
+	}
+	post.Categories = categories
+	comments, err := db.GetCommentsToPost(post.ID)
+	if err != nil {
+		return post, err
+	}
+	post.Comments = comments
+	votes, rate, err := db.GetVotesToPost(post.ID, post.AuthorID)
+	if err != nil {
+		return post, err
+	}
+	post.Votes = votes
+	post.Rate = rate
+	return post, nil
 }
 
 // AddNewPost ..
 func (db *ForumDB) AddNewPost(post app.Post) (int, error) {
 	tx, err := db.DB.Begin()
 	if err != nil {
-		log.Println("11111")
-		log.Println(err)
 		return 0, err
 	}
 
 	res, err := tx.Exec(`
 		INSERT INTO
-				posts (title, content, author_ID)
+				posts (title, created, content, author_ID)
 		VALUES
-				(?, ?, ?);
-	`, post.Title, post.Content, post.AuthorID)
+				(?, ?, ?, ?);
+	`, post.Title, time.Now(), post.Content, post.AuthorID)
 
 	if err != nil {
-		log.Println("2222")
-		log.Println(err)
 		tx.Rollback()
 		return 0, err
 	}
 
 	postID, err := res.LastInsertId()
 	if err != nil {
-		log.Println("333")
-		log.Println(err)
 		tx.Rollback()
 		return 0, err
 	}
@@ -52,8 +65,6 @@ func (db *ForumDB) AddNewPost(post app.Post) (int, error) {
 						(?, ?);
 		`, int(postID), category.ID)
 		if err != nil {
-			log.Println("444")
-			log.Println(err)
 			tx.Rollback()
 			return 0, err
 		}

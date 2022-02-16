@@ -32,13 +32,11 @@ func (f *Forum) RegisterPostHandler(ctx *router.Context) {
 		Password: ctx.Request.FormValue("password"),
 	}
 	if err := f.Service.IsValidRegisterData(user); err != nil {
-		ctx.WriteError(http.StatusBadRequest)
 		log.Println(err)
+		ctx.WriteError(http.StatusBadRequest)
 		return
 	}
 	if err := f.Service.RegisterUser(user); err != nil {
-		// error unique or 500
-		// redirect to the same page with written data
 		log.Println(err)
 		ctx.WriteError(http.StatusBadRequest)
 		return

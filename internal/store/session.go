@@ -2,7 +2,6 @@ package store
 
 import (
 	"database/sql"
-	"forum/internal/app"
 	"log"
 	"net/http"
 	"time"
@@ -33,20 +32,6 @@ func (db *ForumDB) SetCookie(cookie *http.Cookie, email string) error {
 	return err
 }
 
-// CheckForSession ..
-func (db *ForumDB) CheckForSession(user *app.User) error {
-	// check
-	var value string
-	var expires time.Time
-	row := db.DB.QueryRow("SELECT Value, Expires FROM sessions WHERE user_ID = ?;", user.ID)
-	err := row.Scan(&value, &expires)
-	switch err {
-	case sql.ErrNoRows:
-
-	}
-	return nil
-}
-
 // GetUserSession ..
 func (db *ForumDB) GetUserSession(session string) (int, error) {
 	var userID int
@@ -55,13 +40,13 @@ func (db *ForumDB) GetUserSession(session string) (int, error) {
 	return userID, err
 }
 
-// DeleteExpiredSession ..
-func DeleteExpiredSession(db *sql.DB) {
+// CleanSessions ..
+func CleanSessions(db *sql.DB) {
 	for {
 		_, err := db.Exec("DELETE FROM sessions WHERE expires < ?", time.Now())
 		if err != nil {
 			log.Println(err)
 		}
-		time.Sleep(10 * time.Second)
+		time.Sleep(15 * time.Second)
 	}
 }

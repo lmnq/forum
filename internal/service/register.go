@@ -41,7 +41,7 @@ func (s *Service) RegisterUser(user *app.User) error {
 // SetCookie ..
 func (s *Service) SetCookie(email string) (*http.Cookie, error) {
 	uid := uuid.NewV4().String()
-	expiration := time.Now().Add(24 * time.Hour)
+	expiration := time.Now().Add(4 * time.Hour)
 	cookie := &http.Cookie{
 		Name:    "session",
 		Value:   uid,

@@ -1,5 +1,7 @@
 package app
 
+import "time"
+
 // Post ..
 type Post struct {
 	ID         int
@@ -9,6 +11,7 @@ type Post struct {
 	Author     string
 	Title      string
 	Content    string
+	Created    time.Time
 	Categories []Category
 	Comments   []Comment
 }
