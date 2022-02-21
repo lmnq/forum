@@ -1,0 +1,22 @@
+{{template "base" .}}
+
+{{define "title"}}Login{{end}}
+
+{{define "main"}}
+<h2>Login</h2>
+<form action="/user/login" method="POST">
+	<div class="email">
+		<label for="eml">Email:</label>
+		<input type="email" name="email" id="eml" autocomplete="off">
+	</div>
+
+	<div class="password">
+		<label for="pwd">Password:</label>
+		<input type="password" name="password" id="pwd" autocomplete="off">
+	</div>
+
+	<hr>
+
+	<input type="submit" class="btn" value="Login">
+</form>
+{{end}}

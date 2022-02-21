@@ -1,0 +1,23 @@
+{{template "base" .}}
+
+{{define "title"}} Post #{{.Post.ID}} {{end}}
+
+{{define "main"}}
+    <!-- Содержимое из структуры .Post передаётся в точку . и уже-->
+    <!-- в теле оператора 'with' до его закрывающего тега 'end' доступ-->
+    <!-- к полям из структуры .Post выполняется сразу через точку .Title,--> 
+    <!-- чтобы не писать каждый раз .Post.Title.--> 
+    {{with .Post}}
+    <div class="snippet">
+        <div class="metadata">
+            <strong>Title: {{.Title}}</strong>
+            <span>#{{.ID}}</span>
+        </div>
+        <pre><code>{{.Content}}</code></pre>
+        <div class="metadata">
+            <time>Created: {{.Created}}</time>
+            <time> <strong>Category: </strong>{{.Category}}</time>
+        </div>
+    </div>
+    {{end}}
+{{end}}

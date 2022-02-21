@@ -11,7 +11,7 @@ import (
 // IndexHandler ..
 func (f *Forum) IndexHandler(ctx *router.Context) {
 	userID, _ := strconv.Atoi(ctx.Params["userID"])
-	tmpl, err := template.ParseFiles("templates/index.html")
+	tmpl, err := template.ParseFiles("templates/lorem.html")
 	if err != nil {
 		log.Println(err)
 		ctx.WriteError(http.StatusInternalServerError)
