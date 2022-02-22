@@ -9,9 +9,9 @@ import (
 func (db *ForumDB) GetVotesToPost(postID, userID int) (int, int, error) {
 	row := db.DB.QueryRow(`
 		SELECT ifnull(SUM(rate), 0),
-			CASE WHEN user_ID = ?
+			ifnull(SUM(CASE WHEN user_ID = ?
 			THEN rate ELSE 0
-			END as vote
+			END), 0) as rate
 		FROM post_votes WHERE post_ID = ?;
 	`, userID, postID)
 	var votes, rate int
@@ -23,9 +23,9 @@ func (db *ForumDB) GetVotesToPost(postID, userID int) (int, int, error) {
 func (db *ForumDB) GetVotesToComment(commentID, userID int) (int, int, error) {
 	row := db.DB.QueryRow(`
 		SELECT ifnull(SUM(rate), 0),
-			CASE WHEN user_ID = ?
+			ifnull(SUM(CASE WHEN user_ID = ?
 			THEN rate ELSE 0
-			END as vote
+			END), 0) as rate
 		FROM comment_votes WHERE comment_ID = ?;
 	`, userID, commentID)
 	var votes, rate int

@@ -29,6 +29,7 @@
         crossorigin="anonymous"></script>
     
 <div class="col-md-6 gedf-main">
+    {{ range $post := .Posts }}
     <div class="card gedf-card">
 
         <div class="card-header">
@@ -38,7 +39,7 @@
                         <img class="rounded-circle" src="https://picsum.photos/50/50" alt="" width="45">
                     </div>
                     <div class="ml-2">
-                        <div class="h5 m-0">@LeeCross</div>
+                        <div class="h5 m-0"><a class="card-link" href="/profile/{{ $post.AuthorID }}/posts">{{ $post.Author }}</a></div>
                         <div class="h7 text-muted">Miracles Lee Cross</div>
                     </div>
                 </div>
@@ -50,9 +51,8 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
                             <div class="h6 dropdown-header">Configuration</div>
-                            <a class="dropdown-item" href="#">Save</a>
-                            <a class="dropdown-item" href="#">Hide</a>
-                            <a class="dropdown-item" href="#">Report</a>
+                            <a class="dropdown-item" href="#">Edit</a>
+                            <a class="dropdown-item" href="#">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -60,36 +60,51 @@
 
         </div>
         <div class="card-body">
-            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> 10 min ago</div>
+            <div class="text-muted h7 mb-2"> <i class="fa fa-clock-o"></i> {{ $post.Created }}</div>
             <a class="card-link" href="#">
-                <h5 class="card-title"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit consectetur
-                    deserunt illo esse distinctio.</h5>
+                <h5 class="card-title">{{ $post.Title }}</h5>
             </a>
 
-            <p class="card-text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam omnis nihil, aliquam est, voluptates
-                officiis iure soluta
-                alias vel odit, placeat reiciendis ut libero! Quas aliquid natus cumque quae repellendus. Lorem
-                ipsum dolor sit amet consectetur adipisicing elit. Ipsa, excepturi. Doloremque, reprehenderit!
-                Quos in maiores, soluta doloremque molestiae reiciendis libero expedita assumenda fuga quae.
-                Consectetur id molestias itaque facere? Hic!
-            </p>
+            <p class="card-text">{{ $post.Content }}</p>
+            
             <div>
-                <span class="badge badge-primary">JavaScript</span>
-                <span class="badge badge-primary">Android</span>
-                <span class="badge badge-primary">PHP</span>
-                <span class="badge badge-primary">Node.js</span>
-                <span class="badge badge-primary">Ruby</span>
-                <span class="badge badge-primary">Paython</span>
+                {{ range $cat := $post.Categories }}
+                <a class="card-link" href="/category/{{ $cat.ID }}"><span class="badge badge-primary">{{ $cat.Name }}</span></a>
+                {{ end }}
             </div>
         </div>
         <div class="card-footer">
-            <a href="#" class="card-link"><i class="fa fa-gittip"></i> Like</a>
-            <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
-            <a href="#" class="card-link"><i class="fa fa-mail-forward"></i> Share</a>
+            <form id="votepost{{ $post.ID }}" action="/vote/{{ $post.ID }}" method="post"></form>
+            {{ if (eq $post.Rate 1) }}
+            <script>alert('gg')</script>
+            <a href="#" onclick="voteFunction('votepost{{ $post.ID }}', 1)"><i class="fa fa-chevron-circle-up"></i></a>
+            {{ else }}
+            <script>alert('hf')</script>
+            <a href="#" onclick="voteFunction('votepost{{ $post.ID }}', 1)"><i class="fa fa-chevron-up"></i></a>
+            {{ end }}
+            {{ $post.Votes }}
+            {{ if (eq $post.Rate -1) }}
+            <a href="#" class="card-link" onclick="voteFunction('votepost{{ $post.ID }}', -1)"><i class="fa fa-chevron-circle-down"></i></a>
+            {{ else }}
+            <a href="#" class="card-link" onclick="voteFunction('votepost{{ $post.ID }}', -1)"><i class="fa fa-chevron-down"></i></a>
+            {{ end }}
+            <a href="/post/{{ $post.ID }}" class="card-link"><i class="fa fa-comment"></i> Comment</a>
         </div>
     </div>
+    {{ end }}
 </div>
+
+    <script>
+        function voteFunction(formID, rateval) {
+            var postform = document.getElementById(formID);
+            var input = document.createElement('input');
+            input.setAttribute('name', 'rate');
+            input.setAttribute('value', rateval);
+            input.setAttribute('type', 'hidden');
+            postform.appendChild(input);
+            postform.submit();
+        }
+    </script>
 
 </body>
 

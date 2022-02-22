@@ -82,3 +82,11 @@ func (db *ForumDB) GetPostsByCategory(categoryID, userID int) ([]app.Post, error
 
 	return posts, nil
 }
+
+// GetCategoryByID ..
+func (db *ForumDB) GetCategoryByID(categoryID int) (app.Category, error) {
+	category := app.Category{}
+	row := db.DB.QueryRow("SELECT ID, name FROM categories WHERE ID = ?", categoryID)
+	err := row.Scan(&category.ID, &category.Name)
+	return category, err
+}

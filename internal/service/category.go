@@ -39,3 +39,9 @@ func (s *Service) GetPostsByCategory(categoryID, userID int) ([]app.Post, error)
 	}
 	return posts, nil
 }
+
+// GetCategoryByID ..
+func (s *Service) GetCategoryByID(categoryID int) (app.Category, error) {
+	category, err := s.Store.GetCategoryByID(categoryID)
+	return category, err
+}
