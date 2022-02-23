@@ -19,9 +19,9 @@ func initDB() (*sql.DB, error) {
 	if err = initTables(db); err != nil {
 		return nil, err
 	}
-	if err = insertData(db); err != nil {
-		return nil, err
-	}
+	// if err = insertData(db); err != nil {
+	// 	return nil, err
+	// }
 
 	return db, nil
 }
@@ -108,7 +108,7 @@ func initTables(db *sql.DB) error {
 	`)
 
 	_, err = db.Exec(`
-		CREATE TABLE "post_votes" (
+		CREATE TABLE IF NOT EXISTS "post_votes" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"rate"	INTEGER NOT NULL,
 			"voted"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -125,7 +125,7 @@ func initTables(db *sql.DB) error {
 	}
 
 	_, err = db.Exec(`
-		CREATE TABLE "comment_votes" (
+		CREATE TABLE IF NOT EXISTS "comment_votes" (
 			"ID"	INTEGER NOT NULL UNIQUE,
 			"rate"	INTEGER NOT NULL,
 			"voted"	DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

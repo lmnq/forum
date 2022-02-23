@@ -35,9 +35,9 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="mr-2">
+                    <!-- <div class="mr-2">
                         <img class="rounded-circle" src="https://picsum.photos/50/50" alt="" width="45">
-                    </div>
+                    </div> -->
                     <div class="ml-2">
                         <div class="h5 m-0"><a class="card-link" href="/profile/{{ $post.AuthorID }}/posts">{{ $post.Author }}</a></div>
                         <div class="h7 text-muted">Miracles Lee Cross</div>
@@ -76,10 +76,8 @@
         <div class="card-footer">
             <form id="votepost{{ $post.ID }}" action="/vote/{{ $post.ID }}" method="post"></form>
             {{ if (eq $post.Rate 1) }}
-            <script>alert('gg')</script>
             <a href="#" onclick="voteFunction('votepost{{ $post.ID }}', 1)"><i class="fa fa-chevron-circle-up"></i></a>
             {{ else }}
-            <script>alert('hf')</script>
             <a href="#" onclick="voteFunction('votepost{{ $post.ID }}', 1)"><i class="fa fa-chevron-up"></i></a>
             {{ end }}
             {{ $post.Votes }}
