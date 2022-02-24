@@ -36,7 +36,6 @@ func main() {
 	r.GET("/category/:categoryID", forum.AuthMiddleware(forum.FilterByCategoryHandler, false))
 	r.GET("/profile/:profileID/bookmarks", forum.AuthMiddleware(forum.BookmarksHandler, false))
 	r.GET("/profile/:profileID/posts", forum.AuthMiddleware(forum.ProfilePostsHandler, false))
-	r.GET("/bug", forum.BugHandler)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
