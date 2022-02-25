@@ -12,7 +12,15 @@ const sessionHeaderKey = "session"
 // AuthMiddleware ..
 func (f *Forum) AuthMiddleware(next router.Handler, block bool) router.Handler {
 	return func(ctx *router.Context) {
-		session, _ := ctx.Request.Cookie(sessionHeaderKey)
+		session, err := ctx.Request.Cookie(sessionHeaderKey)
+		if err != nil {
+			if block {
+				ctx.WriteError(http.StatusUnauthorized)
+				return
+			}
+			next(ctx)
+			return
+		}
 		fmt.Println("session:", session)
 		userID, err := f.Service.GetUserSession(session.Value)
 		if err != nil && block {
