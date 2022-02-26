@@ -9,7 +9,8 @@ import (
 	"strconv"
 )
 
-type postData struct {
+// PostData ..
+type PostData struct {
 	Post     app.Post
 	Comments []app.Comment
 }

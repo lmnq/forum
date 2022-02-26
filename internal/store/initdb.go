@@ -145,48 +145,48 @@ func initTables(db *sql.DB) error {
 }
 
 func insertData(db *sql.DB) error {
+	// _, err := db.Exec(`
+	// 	INSERT INTO users (username, email, password)
+	// 	VALUES
+	// 			("user1", "user1@gmail.com", "user1password"),
+	// 			("user2", "user2@gmail.com", "user2password"),
+	// 			("user3", "user3@gmail.com", "user3password");
+	// `)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = db.Exec(`
+	// 	INSERT INTO posts (title, content, author_ID)
+	// 	VALUES
+	// 			("title1", "content1", 1),
+	// 			("title2", "content2", 2),
+	// 			("title3", "content3", 3);
+	// `)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = db.Exec(`
+	// 	INSERT INTO comments (content, user_ID, post_ID)
+	// 	VALUES
+	// 			("commentary 1", 1, 1),
+	// 			("commentary 2", 2, 2),
+	// 			("commentary 3", 3, 3);
+	// `)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// _, err = db.Exec(`
+	// 	INSERT INTO post_votes (rate, post_ID, user_ID)
+	// 	VALUES (1, 1, 2);
+	// `)
+	// if err != nil {
+	// 	return err
+	// }
+
 	_, err := db.Exec(`
-		INSERT INTO users (username, email, password)
-		VALUES
-				("user1", "user1@gmail.com", "user1password"),
-				("user2", "user2@gmail.com", "user2password"),
-				("user3", "user3@gmail.com", "user3password");
-	`)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(`
-		INSERT INTO posts (title, content, author_ID)
-		VALUES
-				("title1", "content1", 1),
-				("title2", "content2", 2),
-				("title3", "content3", 3);
-	`)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(`
-		INSERT INTO comments (content, user_ID, post_ID)
-		VALUES
-				("commentary 1", 1, 1),
-				("commentary 2", 2, 2),
-				("commentary 3", 3, 3);
-	`)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(`
-		INSERT INTO post_votes (rate, post_ID, user_ID)
-		VALUES (1, 1, 2);
-	`)
-	if err != nil {
-		return err
-	}
-
-	_, err = db.Exec(`
 		INSERT INTO categories (name)
 		VALUES
 			("Popular Science"),
