@@ -11,8 +11,10 @@ func (db *ForumDB) GetAllPosts(userID int) ([]app.Post, error) {
 	SELECT
 			posts.ID,
 			title,
+			posts.created,
 			content,
-			username
+			username,
+			author_ID
 	FROM posts INNER JOIN users ON posts.author_ID = users.ID;
 	`)
 	if err != nil {
@@ -20,7 +22,7 @@ func (db *ForumDB) GetAllPosts(userID int) ([]app.Post, error) {
 	}
 	for rows.Next() {
 		post := app.Post{}
-		rows.Scan(&post.ID, &post.Title, &post.Content, &post.Author)
+		rows.Scan(&post.ID, &post.Title, &post.Created, &post.Content, &post.Author, &post.AuthorID)
 		categories, err := db.GetCategoriesToPost(post.ID)
 		if err != nil {
 			return posts, err

@@ -31,22 +31,22 @@
         crossorigin="anonymous"></script>
     
         <nav class="navbar sticky-top navbar-expand-xl navbar navbar-dark bg-primary">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="/">Forum</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
               <ul class="navbar-nav">
                 <li class="nav-item active">
-                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="/all">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Features</a>
+                  <a class="nav-link" href="/profile/{{ .User.ID }}/bookmarks">Bookmarks</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">Pricing</a>
+                  <a class="nav-link" href="/profile/{{ .User.ID }}/posts">My Posts</a>
                 </li>
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dropdown link
                   </a>
@@ -55,11 +55,13 @@
                     <a class="dropdown-item" href="#">Another action</a>
                     <a class="dropdown-item" href="#">Something else here</a>
                   </div>
-                </li>
+                </li> -->
               </ul>
             </div>
           </nav>
 
+          <div class="container mt-5 mb-5">
+            <div class="d-flex justify-content-center row">
           {{ if .Posts }}
 <div class="col-md-6 gedf-main">
     {{ range $post := .Posts }}
@@ -73,7 +75,7 @@
                     </div> -->
                     <div class="ml-2">
                         <div class="h5 m-0"><a class="card-link" href="/profile/{{ $post.AuthorID }}/posts">{{ $post.Author }}</a></div>
-                        <div class="h7 text-muted">Miracles Lee Cross</div>
+                        <!-- <div class="h7 text-muted">Miracles Lee Cross</div> -->
                     </div>
                 </div>
                 <div>
@@ -125,6 +127,8 @@
     {{ end }}
 </div>
 {{ end }}
+            </div>
+          </div>
 
     <script>
         function voteFunction(formID, rateval) {

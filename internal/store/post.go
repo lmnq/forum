@@ -7,9 +7,19 @@ import (
 
 // GetPost ..
 func (db *ForumDB) GetPost(id int) (app.Post, error) {
-	row := db.DB.QueryRow("SELECT * FROM posts where ID = ?;", id)
+	// row := db.DB.QueryRow("SELECT * FROM posts where ID = ?;", id)
+	row := db.DB.QueryRow(`
+			SELECT
+			posts.ID,
+			title,
+			posts.created,
+			content,
+			username,
+			author_ID
+		FROM posts INNER JOIN users ON posts.author_ID = users.ID;
+	`)
 	post := app.Post{}
-	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.Created, &post.AuthorID)
+	err := row.Scan(&post.ID, &post.Title, &post.Created, &post.Content, &post.Author, &post.AuthorID)
 	if err != nil {
 		return post, err
 	}
